@@ -84,6 +84,8 @@ class _SignInFormViewState extends State<SignInFormView> {
                 SubmitAuthFormButtonWidet(
                   onPressed: () {
                     if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
+
+                    Navigator.pushReplacementNamed(context, mainRoute);
                   },
                   label: signIn,
                 ),

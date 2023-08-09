@@ -6,4 +6,5 @@ import "package:cosmetic_app/constants/routes/routes_constants.dart";
 
 Map<String, Widget Function(BuildContext)> routes = {
   authRoute: (_) => const AuthScreen(),
+  mainRoute: (_) => const MainScreen(),
 };
