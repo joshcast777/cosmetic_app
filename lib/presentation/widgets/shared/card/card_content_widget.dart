@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:cosmetic_app/presentation/widgets/shared/card/index.dart';
 
 class CardContentWidget extends StatelessWidget {
-  final String title;
-  final Widget? content;
+  final String _title;
+  final Widget? _content;
 
   const CardContentWidget({
     super.key,
-    required this.title,
-    this.content,
-  });
+    required String title,
+    Widget? content,
+  })  : _title = title,
+        _content = content;
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +19,10 @@ class CardContentWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CardTitleWidget(
-          title: title,
+          title: _title,
         ),
         SizedBox(
-          child: content,
+          child: _content,
         ),
       ],
     );

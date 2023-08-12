@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class CardTitleWidget extends StatelessWidget {
-  final String title;
-  final double? fontSize;
-  final FontWeight? fontWeight;
+  final String _title;
+  final double? _fontSize;
+  final FontWeight? _fontWeight;
 
   const CardTitleWidget({
     super.key,
-    required this.title,
-    this.fontSize = 25.0,
-    this.fontWeight = FontWeight.w500,
-  });
+    required String title,
+    double? fontSize = 25.0,
+    FontWeight? fontWeight = FontWeight.w500,
+  })  : _title = title,
+        _fontSize = fontSize,
+        _fontWeight = fontWeight;
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,10 @@ class CardTitleWidget extends StatelessWidget {
         bottom: 10.0,
       ),
       child: Text(
-        title,
+        _title,
         style: TextStyle(
-          fontSize: fontSize,
-          fontWeight: fontWeight,
+          fontSize: _fontSize,
+          fontWeight: _fontWeight,
         ),
       ),
     );

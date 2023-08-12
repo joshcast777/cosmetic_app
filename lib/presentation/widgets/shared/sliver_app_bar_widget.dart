@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 class SliverAppBarWidget extends StatelessWidget {
-  final String image;
-  final String title;
+  final String _image;
+  final String _title;
 
   const SliverAppBarWidget({
     super.key,
-    required this.image,
-    required this.title,
-  });
+    required String image,
+    required String title,
+  })  : _image = image,
+        _title = title;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class SliverAppBarWidget extends StatelessWidget {
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
         title: Text(
-          title,
+          _title,
           style: TextStyle(
             color: colorScheme.tertiary,
             fontSize: 25.0,
@@ -33,7 +34,7 @@ class SliverAppBarWidget extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: Image(
-                image: AssetImage(image),
+                image: AssetImage(_image),
                 fit: BoxFit.cover,
               ),
             ),

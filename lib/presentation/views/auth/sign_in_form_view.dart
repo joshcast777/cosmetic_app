@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:cosmetic_app/constants/auth/auth_constants.dart';
+import 'package:cosmetic_app/constants/regexp/regexp_constants.dart';
 import 'package:cosmetic_app/constants/routes/routes_constants.dart';
 
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 import 'package:cosmetic_app/presentation/widgets/auth/index.dart';
-
-import 'package:cosmetic_app/constants/auth/auth_constants.dart';
-import 'package:cosmetic_app/constants/regexp/regexp_constants.dart';
 
 import 'package:cosmetic_app/utils/index.dart';
 
@@ -58,7 +57,6 @@ class _SignInFormViewState extends State<SignInFormView> {
                     color: colorScheme.primary.withOpacity(0.75),
                     size: 25.0,
                   ),
-                  hint: "Ingresa tu correo electrónico",
                   // label: "Correo electrónico",
                   label: const Text("Correo electrónico"),
                   onChanged: (String value) => email = value,
@@ -76,7 +74,6 @@ class _SignInFormViewState extends State<SignInFormView> {
                   ),
                   onSuffixIconTap: () => setState(() => _obscureText = !_obscureText),
                   suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
-                  hint: "Ingresa tu contraseña",
                   label: const Text("Contraseña"),
                   onChanged: (String value) => password = value,
                   validator: (String? value) => fieldValidator(value, passwordRegExp),

@@ -1,6 +1,6 @@
-import 'package:cosmetic_app/constants/design/design_constants.dart';
-import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cosmetic_app/constants/design/design_constants.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -78,7 +78,7 @@ class _ProfileViewState extends State<ProfileView> {
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.all(13.0),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(borderRdaiusButton),
+                    borderRadius: BorderRadius.circular(borderRdaius),
                   ),
                 ),
                 onPressed: () => setState(() => enabledFormField = !enabledFormField),

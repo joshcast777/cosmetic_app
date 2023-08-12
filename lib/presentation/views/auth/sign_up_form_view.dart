@@ -1,12 +1,11 @@
 import "package:flutter/material.dart";
 
-import "package:cosmetic_app/presentation/widgets/shared/index.dart";
-import "package:cosmetic_app/presentation/widgets/auth/index.dart";
-
-import "package:cosmetic_app/constants/routes/routes_constants.dart";
-
 import "package:cosmetic_app/constants/auth/auth_constants.dart";
 import "package:cosmetic_app/constants/regexp/regexp_constants.dart";
+import "package:cosmetic_app/constants/routes/routes_constants.dart";
+
+import "package:cosmetic_app/presentation/widgets/shared/index.dart";
+import "package:cosmetic_app/presentation/widgets/auth/index.dart";
 
 import "package:cosmetic_app/utils/index.dart";
 
@@ -60,7 +59,6 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     color: colorScheme.primary.withOpacity(0.75),
                     size: 25.0,
                   ),
-                  hint: "Ingresa tu cédula",
                   label: const Text("Cédula"),
                   onChanged: (String value) => dni = value,
                   validator: (String? value) => fieldValidator(value, dniRegExp, errorMessage: "Deben ser 10 dígitos"),
@@ -74,7 +72,6 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     color: colorScheme.primary.withOpacity(0.75),
                     size: 25.0,
                   ),
-                  hint: "Ingresa tu nombre",
                   label: const Text("Nombre"),
                   onChanged: (String value) => name = value,
                   validator: (String? value) => fieldValidator(value!.toUpperCase(), textRegExp),
@@ -88,7 +85,6 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     color: colorScheme.primary.withOpacity(0.75),
                     size: 25.0,
                   ),
-                  hint: "Ingresa tu apellido",
                   label: const Text("Apellido"),
                   onChanged: (String value) => lastName = value,
                   validator: (String? value) => fieldValidator(value!.toUpperCase(), textRegExp),
@@ -103,7 +99,6 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     color: colorScheme.primary.withOpacity(0.75),
                     size: 25.0,
                   ),
-                  hint: "Ingresa tu correo electrónico",
                   label: const Text("Correo electrónico"),
                   onChanged: (String value) => email = value,
                   validator: (String? value) => fieldValidator(value, emailRegExp),
@@ -120,7 +115,6 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                   ),
                   onSuffixIconTap: () => setState(() => _obscureText = !_obscureText),
                   suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
-                  hint: "Ingresa tu contraseña",
                   label: const Text("Contraseña"),
                   showInfoButton: true,
                   onInfoButtonPressed: () => _showAlertDialog(context),

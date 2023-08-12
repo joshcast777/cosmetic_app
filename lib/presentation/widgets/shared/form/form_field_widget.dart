@@ -3,39 +3,51 @@ import 'package:flutter/material.dart';
 import 'package:cosmetic_app/presentation/widgets/shared/form/index.dart';
 
 class FormFieldWidget extends StatelessWidget {
-  final String initialValue;
-  final bool obscureText;
-  final bool showInfoButton;
-  final bool? enabled;
-  final String? errorMessage;
-  final String? hint;
-  final TextInputType? keyboardType;
-  // final String? label;
-  final Widget? label;
-  final void Function(String)? onChanged;
-  final VoidCallback? onInfoButtonPressed;
-  final Widget? preffixIcon;
-  final IconData? suffixIcon;
-  final VoidCallback? onSuffixIconTap;
-  final String? Function(String?)? validator;
+  final bool _obscureText;
+  final bool _showInfoButton;
+  final bool? _enabled;
+  final String? _errorMessage;
+  final String? _hint;
+  final String? _initialValue;
+  final TextInputType? _keyboardType;
+  final Widget? _label;
+  final void Function(String)? _onChanged;
+  final VoidCallback? _onInfoButtonPressed;
+  final VoidCallback? _onSuffixIconTap;
+  final Widget? _preffixIcon;
+  final IconData? _suffixIcon;
+  final String? Function(String?)? _validator;
 
   const FormFieldWidget({
     super.key,
-    this.errorMessage,
-    this.hint,
-    this.keyboardType,
-    this.label,
-    this.onChanged,
-    this.onInfoButtonPressed,
-    this.onSuffixIconTap,
-    this.preffixIcon,
-    this.suffixIcon,
-    this.validator,
-    this.enabled = true,
-    this.initialValue = "",
-    this.obscureText = false,
-    this.showInfoButton = false,
-  });
+    String? errorMessage,
+    String? hint,
+    String? initialValue,
+    TextInputType? keyboardType,
+    Widget? label,
+    Widget? preffixIcon,
+    IconData? suffixIcon,
+    void Function()? onInfoButtonPressed,
+    void Function()? onSuffixIconTap,
+    void Function(String)? onChanged,
+    String? Function(String?)? validator,
+    bool? enabled = true,
+    bool obscureText = false,
+    bool showInfoButton = false,
+  })  : _obscureText = obscureText,
+        _showInfoButton = showInfoButton,
+        _enabled = enabled,
+        _errorMessage = errorMessage,
+        _hint = hint,
+        _initialValue = initialValue,
+        _keyboardType = keyboardType,
+        _label = label,
+        _onChanged = onChanged,
+        _onInfoButtonPressed = onInfoButtonPressed,
+        _onSuffixIconTap = onSuffixIconTap,
+        _preffixIcon = preffixIcon,
+        _suffixIcon = suffixIcon,
+        _validator = validator;
 
   @override
   Widget build(BuildContext context) {
@@ -53,19 +65,13 @@ class FormFieldWidget extends StatelessWidget {
       children: [
         Expanded(
           child: TextFormField(
-            enabled: enabled,
-            initialValue: initialValue,
-            keyboardType: keyboardType,
-            obscureText: obscureText,
-            onChanged: onChanged,
+            enabled: _enabled,
+            initialValue: _initialValue,
+            keyboardType: _keyboardType,
+            obscureText: _obscureText,
+            onChanged: _onChanged,
             decoration: InputDecoration(
-              // labelText: label,
-              label: label,
-              // labelStyle: TextStyle(
-              //   color: Colors.blue, // Cambia esto al color que desees
-              //   fontSize: 16.0, // Cambia el tamaño de fuente
-              //   fontWeight: FontWeight.bold, // Cambia el peso de la fuente
-              // ),
+              label: _label,
               enabledBorder: border,
               disabledBorder: border.copyWith(
                 borderSide: const BorderSide(
@@ -78,7 +84,7 @@ class FormFieldWidget extends StatelessWidget {
                   color: colorScheme.primary,
                 ),
               ),
-              errorText: errorMessage,
+              errorText: _errorMessage,
               errorBorder: border.copyWith(
                 borderSide: BorderSide(
                   color: colorScheme.error,
@@ -89,30 +95,27 @@ class FormFieldWidget extends StatelessWidget {
                   color: colorScheme.error,
                 ),
               ),
-              hintText: hint,
+              hintText: _hint,
               hintStyle: TextStyle(
                 color: colorScheme.primary.withOpacity(0.5),
               ),
-              prefixIcon: preffixIcon,
-              suffixIcon: suffixIcon != null
+              prefixIcon: _preffixIcon,
+              suffixIcon: _suffixIcon != null
                   ? GestureDetector(
-                      onTap: onSuffixIconTap,
+                      onTap: _onSuffixIconTap,
                       child: Icon(
-                        suffixIcon,
+                        _suffixIcon,
                         color: colorScheme.tertiary.withOpacity(0.75),
                       ),
                     )
                   : null,
-              // contentPadding: const EdgeInsets.only(
-              //   left: 24.0,
-              // ),
             ),
-            validator: validator,
+            validator: _validator,
           ),
         ),
-        if (showInfoButton)
+        if (_showInfoButton)
           FormFieldInfoButtonWidget(
-            onInfoButtonPressed: onInfoButtonPressed,
+            onInfoButtonPressed: _onInfoButtonPressed,
             colors: colorScheme,
           ),
       ],

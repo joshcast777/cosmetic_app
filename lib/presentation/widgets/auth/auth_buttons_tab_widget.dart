@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
-import 'package:cosmetic_app/presentation/widgets/auth/index.dart';
-
 import 'package:cosmetic_app/constants/auth/auth_constants.dart';
+
+import 'package:cosmetic_app/presentation/widgets/auth/index.dart';
 
 import 'package:cosmetic_app/infrastructure/enums/index.dart';
 
 class AuthButtonsTabWidget extends StatelessWidget {
-  final VoidCallback onPressed;
-  final bool showForm;
+  final VoidCallback _onPressed;
+  final bool _showForm;
 
   const AuthButtonsTabWidget({
     super.key,
-    required this.showForm,
-    required this.onPressed,
-  });
+    required bool showForm,
+    required void Function() onPressed,
+  })  : _onPressed = onPressed,
+        _showForm = showForm;
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +27,18 @@ class AuthButtonsTabWidget extends StatelessWidget {
         Expanded(
           child: AuthButtonTabWidget(
             position: Position.left,
-            backgroundColor: showForm ? Colors.transparent : colorScheme.primary,
-            foregroundColor: showForm ? colorScheme.primary : colorScheme.onPrimary,
-            onPressed: onPressed,
+            backgroundColor: _showForm ? Colors.transparent : colorScheme.primary,
+            foregroundColor: _showForm ? colorScheme.primary : colorScheme.onPrimary,
+            onPressed: _onPressed,
             text: signIn,
           ),
         ),
         Expanded(
           child: AuthButtonTabWidget(
             position: Position.right,
-            backgroundColor: !showForm ? Colors.transparent : colorScheme.primary,
-            foregroundColor: !showForm ? colorScheme.primary : colorScheme.onPrimary,
-            onPressed: onPressed,
+            backgroundColor: !_showForm ? Colors.transparent : colorScheme.primary,
+            foregroundColor: !_showForm ? colorScheme.primary : colorScheme.onPrimary,
+            onPressed: _onPressed,
             text: signUp,
           ),
         ),

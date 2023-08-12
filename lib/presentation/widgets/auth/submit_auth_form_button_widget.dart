@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:cosmetic_app/constants/design/design_constants.dart';
 
 class SubmitAuthFormButtonWidet extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String label;
+  final String _label;
+  final VoidCallback _onPressed;
 
   const SubmitAuthFormButtonWidet({
     super.key,
-    required this.onPressed,
-    required this.label,
-  });
+    required void Function() onPressed,
+    required String label,
+  })  : _label = label,
+        _onPressed = onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +20,16 @@ class SubmitAuthFormButtonWidet extends StatelessWidget {
         top: 30.0,
       ),
       child: FilledButton(
-        onPressed: onPressed,
+        onPressed: _onPressed,
         style: TextButton.styleFrom(
           padding: const EdgeInsets.all(15.0),
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(borderRdaiusButton)),
+            borderRadius: BorderRadius.all(Radius.circular(borderRdaius)),
           ),
         ),
         child: Center(
           child: Text(
-            label.toUpperCase(),
+            _label.toUpperCase(),
             style: const TextStyle(
               fontSize: 17.0,
             ),

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:cosmetic_app/presentation/views/auth/index.dart';
-
-import 'package:cosmetic_app/presentation/widgets/auth/index.dart';
-
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
+import 'package:cosmetic_app/presentation/widgets/auth/index.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
