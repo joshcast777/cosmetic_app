@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
 
+import 'package:cosmetic_app/constants/design/design_constants.dart';
+
 class EmptyCartListWidget extends StatelessWidget {
   const EmptyCartListWidget({super.key});
 
@@ -52,8 +54,19 @@ class EmptyCartListWidget extends StatelessWidget {
               top: 25.0,
             ),
             child: FilledButton(
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.all(13.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(borderRdaius),
+                ),
+              ),
               onPressed: () => viewProvider.currentIndex = 0,
-              child: const Text("Nuestros productos"),
+              child: const Text(
+                "Nuestros productos",
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+              ),
             ),
           ),
         ],

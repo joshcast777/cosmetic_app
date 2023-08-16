@@ -7,15 +7,22 @@ import 'package:cosmetic_app/infrastructure/models/index.dart';
 class CartProvider extends ChangeNotifier {
   List<CartItem> _cartItems = [];
   bool _isLoading = false;
+  String _message = "";
   double _total = 0.0;
-
-  String message = "";
 
   final BillsFirestore _firestoreFirebase = BillsFirestore();
 
   List<CartItem> get cartItems => _cartItems;
 
   bool get isLoading => _isLoading;
+
+  String get message => _message;
+
+  set message(String newMessage) {
+    _message = newMessage;
+
+    notifyListeners();
+  }
 
   double get total => _total;
 
@@ -29,7 +36,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addBill() async {
+  void addBillToUser() async {
     _isLoading = true;
 
     notifyListeners();
@@ -40,17 +47,17 @@ class CartProvider extends ChangeNotifier {
       cartItems: _cartItems,
     );
 
-    ApiResponse<void> response = await _firestoreFirebase.addBillToUser("ESqSO8PyAAWgmLCYSZUzNzzbM8L2", billData);
+    ApiResponse<void> response = await _firestoreFirebase.firebaseAddBillToUser("ESqSO8PyAAWgmLCYSZUzNzzbM8L2", billData);
 
-    if (!response.isSuccess) {
-      message = response.message;
+    if (!response.isSuccess && response.message.startsWith("Error")) {
+      _message = response.message.split("/")[1];
       _isLoading = false;
 
       notifyListeners();
       return;
     }
 
-    message = response.message;
+    _message = response.message.split("/")[1];
     _total = 0.0;
     _cartItems = [];
     _isLoading = false;

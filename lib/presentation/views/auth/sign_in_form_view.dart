@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
+import 'package:cosmetic_app/infrastructure/models/index.dart';
+
+import 'package:cosmetic_app/presentation/widgets/auth/index.dart';
+import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
+
+import 'package:cosmetic_app/presentation/providers/index.dart';
+
 import 'package:cosmetic_app/constants/auth/auth_constants.dart';
 import 'package:cosmetic_app/constants/regexp/regexp_constants.dart';
-import 'package:cosmetic_app/constants/routes/routes_constants.dart';
-
-import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
-import 'package:cosmetic_app/presentation/widgets/auth/index.dart';
 
 import 'package:cosmetic_app/utils/index.dart';
 
@@ -17,16 +22,40 @@ class SignInFormView extends StatefulWidget {
 }
 
 class _SignInFormViewState extends State<SignInFormView> {
-  String email = "";
-  String password = "";
-
+  String _message = "";
   bool _obscureText = true;
+
+  UserAuth userAuth = UserAuth(
+    email: "",
+    password: "",
+  );
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    final AuthProvider authProvider = context.watch<AuthProvider>();
+
+    if (authProvider.message.isNotEmpty && _message != authProvider.message) {
+      Future.microtask(
+        () => showSnackBar(
+          context,
+          authProvider.message.split("/")[1],
+          "OK",
+          snackBarActionOnPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+            authProvider.message = "";
+          },
+          durationInSeconds: 3,
+          closedAction: () => authProvider.message = "",
+        ),
+      );
+    }
+
+    _message = authProvider.message;
 
     return Column(
       children: [
@@ -59,7 +88,7 @@ class _SignInFormViewState extends State<SignInFormView> {
                   ),
                   // label: "Correo electrónico",
                   label: const Text("Correo electrónico"),
-                  onChanged: (String value) => email = value,
+                  onChanged: (String value) => userAuth.email = value,
                   validator: (String? value) => fieldValidator(value, emailRegExp),
                 ),
                 const SizedBox(
@@ -75,17 +104,26 @@ class _SignInFormViewState extends State<SignInFormView> {
                   onSuffixIconTap: () => setState(() => _obscureText = !_obscureText),
                   suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
                   label: const Text("Contraseña"),
-                  onChanged: (String value) => password = value,
+                  onChanged: (String value) => userAuth.password = value,
                   validator: (String? value) => fieldValidator(value, passwordRegExp),
                 ),
-                SubmitAuthFormButtonWidet(
-                  onPressed: () {
-                    if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
+                authProvider.isLoading
+                    ? Container(
+                        margin: const EdgeInsets.only(
+                          top: 30.0,
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : SubmitAuthFormButtonWidet(
+                        onPressed: () {
+                          if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
 
-                    Navigator.pushReplacementNamed(context, mainRoute);
-                  },
-                  label: signIn,
-                ),
+                          authProvider.signInUser(userAuth);
+                        },
+                        label: signIn,
+                      ),
               ],
             ),
           ),

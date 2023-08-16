@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:cosmetic_app/constants/design/design_constants.dart';
-
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
+
+import 'package:cosmetic_app/constants/design/design_constants.dart';
 
 class CardWidget extends StatelessWidget {
   final String _imagePath;

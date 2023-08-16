@@ -1,16 +1,4 @@
-// To parse this JSON data, do
-//
-//     final customerBill = customerBillFromJson(jsonString);
-
-// import 'dart:convert';
-
-// import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:cosmetic_app/infrastructure/models/index.dart';
-
-// Bill customerBillFromJson(String str) => Bill.fromJson(json.decode(str));
-
-// String customerBillToJson(Bill data) => json.encode(data.toJson());
 
 class Bill {
   final String _id;
@@ -30,11 +18,6 @@ class Bill {
         id: json["id"],
         data: BillData.fromJson(json["data"]),
       );
-
-  // Map<String, dynamic> toJson() => {
-  //       "id": _id,
-  //       "data": _data.toJson(),
-  //     };
 }
 
 class BillData {
@@ -61,15 +44,4 @@ class BillData {
         total: json["total"]?.toDouble(),
         cartItems: List<CartItem>.from(json["cart_items"].map((cartItem) => CartItem.fromJson(cartItem))),
       );
-
-  // Map<String, dynamic> toJson() => {
-  //       "date": _date.toIso8601String(),
-  //       "total": _total,
-  //       "products": List<dynamic>.from(_cartItems.map((product) => product.toJson())),
-  //     };
-  // Map<String, dynamic> toJson() => {
-  //       "date": Timestamp.fromDate(_date),
-  //       "total": _total,
-  //       "products": List<dynamic>.from(_cartItems.map((cartItem) => cartItem.toJson())),
-  //     };
 }

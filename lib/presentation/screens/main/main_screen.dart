@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:cosmetic_app/presentation/views/cart/index.dart';
 import 'package:cosmetic_app/presentation/views/products/index.dart';
 import 'package:cosmetic_app/presentation/views/profile/index.dart';
+
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'package:cosmetic_app/infrastructure/models/index.dart';
+
 import 'package:provider/provider.dart';
 
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
-
-import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 import 'package:cosmetic_app/utils/index.dart';
 
@@ -100,7 +100,7 @@ class CartItemWidget extends StatelessWidget {
           onPressed: () {
             cartProvider.removeFromCart(cartItem);
 
-            showSnackBar(context, "Eliminado del carrito", "Deshacer", () => cartProvider.addToCart(cartItem.product));
+            showSnackBar(context, "Eliminado del carrito", "Deshacer", snackBarActionOnPressed: () => cartProvider.addToCart(cartItem.product));
           },
           child: Icon(
             Icons.delete,

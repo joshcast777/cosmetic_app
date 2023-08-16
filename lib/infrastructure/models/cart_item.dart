@@ -14,9 +14,4 @@ class CartItem {
         amount: json["amount"],
         product: Product.fromJson(json["product"]),
       );
-
-  // Map<String, dynamic> toJson() => {
-  //       "amount": amount,
-  //       "product": product.toJson(),
-  //     };
 }

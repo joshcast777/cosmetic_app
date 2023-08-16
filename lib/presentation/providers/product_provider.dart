@@ -13,6 +13,8 @@ class ProductProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
+  String get message => _message;
+
   List<Product> get products => _products;
 
   Future<List<Product>> getProducts() async {

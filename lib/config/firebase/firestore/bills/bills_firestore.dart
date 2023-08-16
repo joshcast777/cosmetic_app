@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:cosmetic_app/constants/database/database_constants.dart';
-
 import 'package:cosmetic_app/infrastructure/models/index.dart';
+
+import 'package:cosmetic_app/constants/database/database_constants.dart';
+import 'package:cosmetic_app/constants/errors/error_constants.dart';
+import 'package:cosmetic_app/constants/success/success_constants.dart';
 
 class BillsFirestore {
   final FirebaseFirestore _billFirestore = FirebaseFirestore.instance;
 
-  Future<ApiResponse<void>> addBillToUser(String userId, BillData billData) async {
+  Future<ApiResponse<void>> firebaseAddBillToUser(String userId, BillData billData) async {
     try {
       DocumentReference userDocument = _billFirestore.collection(customersPathDatabase).doc(userId);
 
@@ -26,12 +28,12 @@ class BillsFirestore {
 
       return ApiResponse<void>(
         isSuccess: true,
-        message: "Compra exitosa",
+        message: "$successMessage$successfulPurchase",
       );
-    } catch (error) {
+    } catch (_) {
       return ApiResponse<void>(
         isSuccess: false,
-        message: "Compra fallida",
+        message: "$errorMessage$failedPurchaseError",
       );
     }
   }

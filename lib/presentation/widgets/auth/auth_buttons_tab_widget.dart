@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:cosmetic_app/constants/auth/auth_constants.dart';
+import 'package:cosmetic_app/infrastructure/enums/index.dart';
 
 import 'package:cosmetic_app/presentation/widgets/auth/index.dart';
 
-import 'package:cosmetic_app/infrastructure/enums/index.dart';
+import 'package:cosmetic_app/constants/auth/auth_constants.dart';
 
 class AuthButtonsTabWidget extends StatelessWidget {
   final VoidCallback _onPressed;

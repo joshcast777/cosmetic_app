@@ -11,16 +11,21 @@ class ViewProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void showSnackBarWidget(BuildContext context, String snackBarText, String snackBarActionLabel, VoidCallback snackBarActionOnPressed) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(snackBarText),
-      duration: const Duration(
-        seconds: 2,
-      ),
-      action: SnackBarAction(
-        label: snackBarActionLabel,
-        onPressed: snackBarActionOnPressed,
-      ),
-    ));
+  void showSnackBarWidget(BuildContext context, String snackBarText, String snackBarActionLabel, VoidCallback snackBarActionOnPressed, int durationInSeconds, VoidCallback closedAction) {
+    final ScaffoldMessengerState scaffolMessenger = ScaffoldMessenger.of(context);
+
+    scaffolMessenger
+        .showSnackBar(SnackBar(
+          content: Text(snackBarText),
+          duration: Duration(
+            seconds: durationInSeconds,
+          ),
+          action: SnackBarAction(
+            label: snackBarActionLabel,
+            onPressed: snackBarActionOnPressed,
+          ),
+        ))
+        .closed
+        .then((_) => closedAction());
   }
 }

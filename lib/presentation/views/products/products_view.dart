@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 
 import 'package:cosmetic_app/constants/images/image_constants.dart';
 
-import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 import 'package:cosmetic_app/presentation/widgets/product/index.dart';
+
+import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
 

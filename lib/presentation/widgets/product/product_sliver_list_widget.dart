@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:cosmetic_app/infrastructure/models/index.dart';
+
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
-
-import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 import 'package:cosmetic_app/utils/index.dart';
 
@@ -78,7 +78,7 @@ class ProductSliverListWidget extends StatelessWidget {
 
                             cartProvider.addToCart(product);
 
-                            showSnackBar(context, "Agregado al carrito", "Deshacer", () => cartProvider.removeProductFromCart(product));
+                            showSnackBar(context, "Agregado al carrito", "Deshacer", snackBarActionOnPressed: () => cartProvider.removeProductFromCart(product));
                           },
                     child: Icon(
                       Icons.add_shopping_cart,

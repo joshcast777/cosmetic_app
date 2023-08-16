@@ -70,8 +70,10 @@ class FormFieldWidget extends StatelessWidget {
             keyboardType: _keyboardType,
             obscureText: _obscureText,
             onChanged: _onChanged,
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
             decoration: InputDecoration(
               label: _label,
+              isDense: true,
               enabledBorder: border,
               disabledBorder: border.copyWith(
                 borderSide: const BorderSide(

@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:cosmetic_app/constants/design/design_constants.dart';
-import 'package:cosmetic_app/constants/images/image_constants.dart';
+import 'package:cosmetic_app/presentation/widgets/cart/index.dart';
 
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
-import 'package:cosmetic_app/presentation/widgets/cart/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
 
 import 'package:cosmetic_app/infrastructure/models/index.dart';
+
+import 'package:cosmetic_app/constants/design/design_constants.dart';
+import 'package:cosmetic_app/constants/images/image_constants.dart';
 
 class CartView extends StatelessWidget {
   const CartView({super.key});
@@ -23,13 +24,19 @@ class CartView extends StatelessWidget {
     final ViewProvider viewProvider = context.watch<ViewProvider>();
 
     if (cartProvider.message.isNotEmpty) {
-      Future.microtask(() => _showAlertDialog(context, cartProvider.message, () {
+      Future.microtask(
+        () => _showAlertDialog(
+          context,
+          cartProvider.message,
+          () {
             Navigator.of(context).pop();
 
             cartProvider.message = "";
 
             viewProvider.currentIndex = 0;
-          }));
+          },
+        ),
+      );
     }
 
     return Column(
@@ -73,7 +80,7 @@ class CartView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(borderRdaius),
                       ),
                     ),
-                    onPressed: cartProvider.isLoading ? null : () => cartProvider.addBill(),
+                    onPressed: cartProvider.isLoading ? null : () => cartProvider.addBillToUser(),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

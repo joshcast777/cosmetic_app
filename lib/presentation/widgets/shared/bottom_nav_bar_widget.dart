@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BottomNavBarWidget extends StatefulWidget {
+class BottomNavBarWidget extends StatelessWidget {
   final int _currentIndex;
   final void Function(int)? _onTap;
 
@@ -12,11 +12,6 @@ class BottomNavBarWidget extends StatefulWidget {
         _onTap = onTap;
 
   @override
-  State<BottomNavBarWidget> createState() => _BottomNavBarWidgetState();
-}
-
-class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
-  @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
@@ -24,8 +19,8 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
       type: BottomNavigationBarType.shifting,
       backgroundColor: const Color.fromRGBO(55, 57, 84, 1),
       showUnselectedLabels: false,
-      currentIndex: widget._currentIndex,
-      onTap: widget._onTap,
+      currentIndex: _currentIndex,
+      onTap: _onTap,
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_outlined),

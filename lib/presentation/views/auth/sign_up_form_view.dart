@@ -1,11 +1,18 @@
 import "package:flutter/material.dart";
 
+import "package:provider/provider.dart";
+
+import "package:cosmetic_app/infrastructure/models/index.dart";
+
+import "package:cosmetic_app/presentation/widgets/auth/index.dart";
+import "package:cosmetic_app/presentation/widgets/shared/index.dart";
+
+import "package:cosmetic_app/presentation/providers/index.dart";
+
+import 'package:cosmetic_app/preferences/preferences.dart';
+
 import "package:cosmetic_app/constants/auth/auth_constants.dart";
 import "package:cosmetic_app/constants/regexp/regexp_constants.dart";
-import "package:cosmetic_app/constants/routes/routes_constants.dart";
-
-import "package:cosmetic_app/presentation/widgets/shared/index.dart";
-import "package:cosmetic_app/presentation/widgets/auth/index.dart";
 
 import "package:cosmetic_app/utils/index.dart";
 
@@ -17,19 +24,47 @@ class SignUpFormView extends StatefulWidget {
 }
 
 class _SignUpFormViewState extends State<SignUpFormView> {
-  String dni = "";
-  String name = "";
-  String lastName = "";
-  String email = "";
-  String password = "";
+  String _message = "";
 
   bool _obscureText = true;
+
+  UserAppData userAppData = UserAppData(
+    dni: "",
+    name: "",
+    lastName: "",
+    email: "",
+    password: "",
+    role: "customer",
+  );
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    final AuthProvider authProvider = context.watch<AuthProvider>();
+
+    final UserProvider userProvider = context.watch<UserProvider>();
+
+    if (authProvider.message.isNotEmpty && _message != authProvider.message) {
+      Future.microtask(
+        () => showSnackBar(
+          context,
+          authProvider.message.split("/")[1],
+          "OK",
+          snackBarActionOnPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+            authProvider.message = "";
+          },
+          durationInSeconds: 3,
+          closedAction: () => authProvider.message = "",
+        ),
+      );
+    }
+
+    _message = authProvider.message;
 
     return Column(
       children: [
@@ -60,7 +95,7 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     size: 25.0,
                   ),
                   label: const Text("Cédula"),
-                  onChanged: (String value) => dni = value,
+                  onChanged: (String value) => userAppData.dni = value,
                   validator: (String? value) => fieldValidator(value, dniRegExp, errorMessage: "Deben ser 10 dígitos"),
                 ),
                 const SizedBox(
@@ -73,7 +108,7 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     size: 25.0,
                   ),
                   label: const Text("Nombre"),
-                  onChanged: (String value) => name = value,
+                  onChanged: (String value) => userAppData.name = value,
                   validator: (String? value) => fieldValidator(value!.toUpperCase(), textRegExp),
                 ),
                 const SizedBox(
@@ -86,7 +121,7 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     size: 25.0,
                   ),
                   label: const Text("Apellido"),
-                  onChanged: (String value) => lastName = value,
+                  onChanged: (String value) => userAppData.lastName = value,
                   validator: (String? value) => fieldValidator(value!.toUpperCase(), textRegExp),
                 ),
                 const SizedBox(
@@ -100,7 +135,7 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     size: 25.0,
                   ),
                   label: const Text("Correo electrónico"),
-                  onChanged: (String value) => email = value,
+                  onChanged: (String value) => userAppData.email = value,
                   validator: (String? value) => fieldValidator(value, emailRegExp),
                 ),
                 const SizedBox(
@@ -118,17 +153,31 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                   label: const Text("Contraseña"),
                   showInfoButton: true,
                   onInfoButtonPressed: () => _showAlertDialog(context),
-                  onChanged: (String value) => password = value,
+                  onChanged: (String value) => userAppData.password = value,
                   validator: (String? value) => fieldValidator(value, passwordRegExp),
                 ),
-                SubmitAuthFormButtonWidet(
-                  onPressed: () {
-                    if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
+                authProvider.isLoading
+                    ? Container(
+                        margin: const EdgeInsets.only(
+                          top: 30.0,
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : SubmitAuthFormButtonWidet(
+                        onPressed: () {
+                          if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
 
-                    Navigator.pushReplacementNamed(context, mainRoute);
-                  },
-                  label: signUp,
-                ),
+                          authProvider.signUpUser(UserAuth(
+                            email: userAppData.email,
+                            password: userAppData.password,
+                          ));
+
+                          if (Preferences.getItem<bool>("isAuthenticated") != null && Preferences.getItem<bool>("isAuthenticated")!) userProvider.addUser(userAppData);
+                        },
+                        label: signUp,
+                      ),
               ],
             ),
           ),

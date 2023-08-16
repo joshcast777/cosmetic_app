@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:cosmetic_app/constants/database/database_constants.dart';
-import 'package:cosmetic_app/constants/errors/error_constants.dart';
-
 import 'package:cosmetic_app/infrastructure/models/index.dart';
+
+import 'package:cosmetic_app/utils/index.dart';
+
+import 'package:cosmetic_app/constants/database/database_constants.dart';
 
 class ProductsFirestore {
   final FirebaseFirestore _productFirestore = FirebaseFirestore.instance;
@@ -27,10 +28,7 @@ class ProductsFirestore {
         data: products,
       );
     } catch (e) {
-      return ApiResponse<List<Product>>(
-        isSuccess: false,
-        message: e is FirebaseException ? "$errorMessage${e.message}" : "$errorMessage$unknownError",
-      );
+      return errorMessageRequest<List<Product>>(e);
     }
   }
 }
