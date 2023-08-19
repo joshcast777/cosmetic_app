@@ -25,17 +25,9 @@ class SignUpFormView extends StatefulWidget {
 
 class _SignUpFormViewState extends State<SignUpFormView> {
   String _message = "";
-
   bool _obscureText = true;
 
-  UserAppData userAppData = UserAppData(
-    dni: "",
-    name: "",
-    lastName: "",
-    email: "",
-    password: "",
-    role: "customer",
-  );
+  final UserAppData _userAppData = userAppDataConstant;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -44,7 +36,7 @@ class _SignUpFormViewState extends State<SignUpFormView> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     final AuthProvider authProvider = context.watch<AuthProvider>();
-
+    final ProductProvider productProvider = context.watch<ProductProvider>();
     final UserProvider userProvider = context.watch<UserProvider>();
 
     if (authProvider.message.isNotEmpty && _message != authProvider.message) {
@@ -95,8 +87,8 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     size: 25.0,
                   ),
                   label: const Text("Cédula"),
-                  onChanged: (String value) => userAppData.dni = value,
-                  validator: (String? value) => fieldValidator(value, dniRegExp, errorMessage: "Deben ser 10 dígitos"),
+                  onChanged: (String value) => _userAppData.dni = value,
+                  validator: (String? value) => fieldValidator(value, regExp: dniRegExp, errorMessage: "Deben ser 10 dígitos"),
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -108,8 +100,8 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     size: 25.0,
                   ),
                   label: const Text("Nombre"),
-                  onChanged: (String value) => userAppData.name = value,
-                  validator: (String? value) => fieldValidator(value!.toUpperCase(), textRegExp),
+                  onChanged: (String value) => _userAppData.name = value,
+                  validator: (String? value) => fieldValidator(value!.toUpperCase(), regExp: textRegExp),
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -121,8 +113,8 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     size: 25.0,
                   ),
                   label: const Text("Apellido"),
-                  onChanged: (String value) => userAppData.lastName = value,
-                  validator: (String? value) => fieldValidator(value!.toUpperCase(), textRegExp),
+                  onChanged: (String value) => _userAppData.lastName = value,
+                  validator: (String? value) => fieldValidator(value!.toUpperCase(), regExp: textRegExp),
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -135,8 +127,8 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                     size: 25.0,
                   ),
                   label: const Text("Correo electrónico"),
-                  onChanged: (String value) => userAppData.email = value,
-                  validator: (String? value) => fieldValidator(value, emailRegExp),
+                  onChanged: (String value) => _userAppData.email = value,
+                  validator: (String? value) => fieldValidator(value, regExp: emailRegExp),
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -152,9 +144,9 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                   suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
                   label: const Text("Contraseña"),
                   showInfoButton: true,
-                  onInfoButtonPressed: () => _showAlertDialog(context),
-                  onChanged: (String value) => userAppData.password = value,
-                  validator: (String? value) => fieldValidator(value, passwordRegExp),
+                  onInfoButtonPressed: () => _showDialog(context),
+                  onChanged: (String value) => _userAppData.password = value,
+                  validator: (String? value) => fieldValidator(value, regExp: passwordRegExp),
                 ),
                 authProvider.isLoading
                     ? Container(
@@ -166,15 +158,17 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                         ),
                       )
                     : SubmitAuthFormButtonWidet(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
 
                           authProvider.signUpUser(UserAuth(
-                            email: userAppData.email,
-                            password: userAppData.password,
+                            email: _userAppData.email,
+                            password: _userAppData.password,
                           ));
 
-                          if (Preferences.getItem<bool>("isAuthenticated") != null && Preferences.getItem<bool>("isAuthenticated")!) userProvider.addUser(userAppData);
+                          if (Preferences.getItem<bool>("isAuthenticated") != null && Preferences.getItem<bool>("isAuthenticated")!) userProvider.addUser(_userAppData);
+
+                          await productProvider.getProducts();
                         },
                         label: signUp,
                       ),
@@ -186,7 +180,7 @@ class _SignUpFormViewState extends State<SignUpFormView> {
     );
   }
 
-  Future<dynamic> _showAlertDialog(BuildContext context) {
+  Future<dynamic> _showDialog(BuildContext context) {
     final List<String> conditions = [
       "Al menos una mayúscula",
       "Al menos una minúscula",

@@ -1,3 +1,4 @@
+import 'package:cosmetic_app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -7,6 +8,8 @@ import 'package:cosmetic_app/infrastructure/models/index.dart';
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
+
+import 'package:cosmetic_app/preferences/preferences.dart';
 
 import 'package:cosmetic_app/utils/index.dart';
 
@@ -19,6 +22,8 @@ class ProductSliverListWidget extends StatelessWidget {
 
     final CartProvider cartProvider = context.watch<CartProvider>();
     final ProductProvider productProvider = context.watch<ProductProvider>();
+
+    final String? role = Preferences.getItem<String>("role");
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
@@ -45,14 +50,17 @@ class ProductSliverListWidget extends StatelessWidget {
                   FilledButton.tonal(
                     style: FilledButton.styleFrom(
                       backgroundColor: Colors.transparent,
-                      // shape: const CircleBorder(),
                       side: BorderSide(
                         color: colorScheme.tertiary,
                         width: 2.0,
                       ),
                       minimumSize: const Size(50.0, 50.0),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      productProvider.selectedProduct = productProvider.products[index];
+
+                      Navigator.pushNamed(_, AppRoutes.productRoute);
+                    },
                     child: Text(
                       "Info",
                       style: TextStyle(
@@ -62,29 +70,31 @@ class ProductSliverListWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  FilledButton.tonal(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: colorScheme.tertiary,
-                      shape: const CircleBorder(),
-                      minimumSize: const Size(50.0, 50.0),
+                  if (role == "customer")
+                    const SizedBox(
+                      width: 10.0,
                     ),
-                    onPressed: cartProvider.cartItems.any((CartItem cartItem) => cartItem.product == productProvider.products[index])
-                        ? null
-                        : () {
-                            final Product product = productProvider.products[index];
+                  if (role == "customer")
+                    FilledButton.tonal(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: colorScheme.tertiary,
+                        shape: const CircleBorder(),
+                        minimumSize: const Size(50.0, 50.0),
+                      ),
+                      onPressed: cartProvider.cartItems.any((CartItem cartItem) => cartItem.product == productProvider.products[index])
+                          ? null
+                          : () {
+                              final Product product = productProvider.products[index];
 
-                            cartProvider.addToCart(product);
+                              cartProvider.addToCart(product);
 
-                            showSnackBar(context, "Agregado al carrito", "Deshacer", snackBarActionOnPressed: () => cartProvider.removeProductFromCart(product));
-                          },
-                    child: Icon(
-                      Icons.add_shopping_cart,
-                      color: colorScheme.onTertiary,
+                              showSnackBar(context, "Agregado al carrito", "Deshacer", snackBarActionOnPressed: () => cartProvider.removeProductFromCart(product));
+                            },
+                      child: Icon(
+                        Icons.add_shopping_cart,
+                        color: colorScheme.onTertiary,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ],

@@ -10,6 +10,10 @@ class UserApp {
   })  : _id = id,
         _data = data;
 
+  UserApp.copy(UserApp userApp)
+      : _id = userApp.id,
+        _data = UserAppData.copy(userApp.data);
+
   String get id => _id;
 
   UserAppData get data => _data;
@@ -38,6 +42,15 @@ class UserAppData {
     required this.role,
     this.bills,
   });
+
+  UserAppData.copy(UserAppData data)
+      : dni = data.dni,
+        name = data.name,
+        lastName = data.lastName,
+        email = data.email,
+        password = data.password,
+        role = data.role,
+        bills = data.bills;
 
   factory UserAppData.fromJson(Map<String, dynamic> json) => UserAppData(
         dni: json["dni"],

@@ -28,4 +28,8 @@ class ViewProvider extends ChangeNotifier {
         .closed
         .then((_) => closedAction());
   }
+
+  void clearAll() {
+    _currentIndex = 0;
+  }
 }

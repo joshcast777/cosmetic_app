@@ -7,7 +7,24 @@ import 'package:cosmetic_app/presentation/providers/index.dart';
 import 'package:cosmetic_app/constants/design/design_constants.dart';
 
 class EmptyCartListWidget extends StatelessWidget {
-  const EmptyCartListWidget({super.key});
+  final String _buttonText;
+  final VoidCallback _buttonPressed;
+  final IconData _icon;
+  final String _text;
+  final String _title;
+
+  const EmptyCartListWidget({
+    super.key,
+    required VoidCallback buttonPressed,
+    String buttonText = "Texto del botón",
+    IconData icon = Icons.lens,
+    String text = "Escribe tu texto",
+    String title = "Tu título",
+  })  : _buttonPressed = buttonPressed,
+        _buttonText = buttonText,
+        _icon = icon,
+        _text = text,
+        _title = title;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +40,7 @@ class EmptyCartListWidget extends StatelessWidget {
       child: Column(
         children: [
           Icon(
-            Icons.sentiment_dissatisfied_outlined,
+            _icon,
             color: colorScheme.inverseSurface,
             size: 250.0,
           ),
@@ -32,7 +49,7 @@ class EmptyCartListWidget extends StatelessWidget {
               bottom: 10.0,
             ),
             child: Text(
-              "¡Qué mal!",
+              _title,
               style: TextStyle(
                 color: colorScheme.tertiary,
                 fontSize: 40.0,
@@ -41,7 +58,7 @@ class EmptyCartListWidget extends StatelessWidget {
             ),
           ),
           Text(
-            "No has agreado productos a tu carrito, te propongo ver nuestro catálogo",
+            _text,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: colorScheme.inverseSurface,
@@ -60,10 +77,10 @@ class EmptyCartListWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(borderRdaius),
                 ),
               ),
-              onPressed: () => viewProvider.currentIndex = 0,
-              child: const Text(
-                "Nuestros productos",
-                style: TextStyle(
+              onPressed: _buttonPressed,
+              child: Text(
+                _buttonText,
+                style: const TextStyle(
                   fontSize: 18.0,
                 ),
               ),

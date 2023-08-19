@@ -1,3 +1,4 @@
+import 'package:cosmetic_app/preferences/preferences.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -11,16 +12,18 @@ import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 import 'package:cosmetic_app/presentation/providers/index.dart';
 
 class MainScreen extends StatelessWidget {
-  final List<Widget> screens = [
-    const ProductsView(),
-    const CartView(),
-    const ProfileView(),
-  ];
-
-  MainScreen({super.key});
+  const MainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final String? role = Preferences.getItem<String>("role");
+
+    final List<Widget> screens = [
+      const ProductsView(),
+      role == "admin" ? const ProductFormView() : const CartView(),
+      const ProfileView(),
+    ];
+
     final ViewProvider viewProvider = context.watch<ViewProvider>();
 
     return Scaffold(

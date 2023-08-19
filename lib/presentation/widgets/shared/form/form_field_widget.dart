@@ -11,6 +11,7 @@ class FormFieldWidget extends StatelessWidget {
   final String? _initialValue;
   final TextInputType? _keyboardType;
   final Widget? _label;
+  final int? _maxLines;
   final void Function(String)? _onChanged;
   final VoidCallback? _onInfoButtonPressed;
   final VoidCallback? _onSuffixIconTap;
@@ -32,6 +33,7 @@ class FormFieldWidget extends StatelessWidget {
     void Function(String)? onChanged,
     String? Function(String?)? validator,
     bool? enabled = true,
+    int? maxLines = 1,
     bool obscureText = false,
     bool showInfoButton = false,
   })  : _obscureText = obscureText,
@@ -42,6 +44,7 @@ class FormFieldWidget extends StatelessWidget {
         _initialValue = initialValue,
         _keyboardType = keyboardType,
         _label = label,
+        _maxLines = maxLines,
         _onChanged = onChanged,
         _onInfoButtonPressed = onInfoButtonPressed,
         _onSuffixIconTap = onSuffixIconTap,
@@ -65,6 +68,7 @@ class FormFieldWidget extends StatelessWidget {
       children: [
         Expanded(
           child: TextFormField(
+            maxLines: _maxLines,
             enabled: _enabled,
             initialValue: _initialValue,
             keyboardType: _keyboardType,

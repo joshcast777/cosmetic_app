@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 class Bill {
@@ -40,8 +41,8 @@ class BillData {
   List<CartItem> get cartItems => _cartItems;
 
   factory BillData.fromJson(Map<String, dynamic> json) => BillData(
-        date: DateTime.parse(json["date"]),
+        date: (json["date"] as Timestamp).toDate(),
         total: json["total"]?.toDouble(),
-        cartItems: List<CartItem>.from(json["cart_items"].map((cartItem) => CartItem.fromJson(cartItem))),
+        cartItems: List<CartItem>.from(json["products"].map((cartItem) => CartItem.fromJson(cartItem))),
       );
 }

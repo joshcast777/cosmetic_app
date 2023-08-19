@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosmetic_app/constants/success/success_constants.dart';
 
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
@@ -29,6 +30,22 @@ class UsersFirestore {
     }
   }
 
+  Future<ApiResponse<void>> firebaseDeleteUser() async {
+    final String role = Preferences.getItem<String>("role")!;
+    final String uid = Preferences.getItem<String>("uid")!;
+
+    try {
+      await _userFirestore.collection("${role}s").doc(uid).delete();
+
+      return ApiResponse<void>(
+        isSuccess: true,
+        message: "",
+      );
+    } catch (e) {
+      return errorMessageRequest(e);
+    }
+  }
+
   Future<ApiResponse<UserApp>> firebaseGetAdmin() async {
     final String uid = Preferences.getItem<String>("uid")!;
 
@@ -54,7 +71,7 @@ class UsersFirestore {
 
       return ApiResponse<UserApp>(
         isSuccess: false,
-        message: "$errorMessage$dataNotFoundEror",
+        message: "$errorMessage$dataNotFoundErorr",
       );
     } catch (e) {
       return errorMessageRequest<UserApp>(e);
@@ -62,7 +79,7 @@ class UsersFirestore {
   }
 
   Future<ApiResponse<UserApp>> firebaseGetCustomer() async {
-    final String uid = Preferences.getItem<String>("uid")!;
+    final String? uid = Preferences.getItem<String>("uid");
 
     try {
       final DocumentReference<Map<String, dynamic>> customerReference = _userFirestore.collection(customersPathDatabase).doc(uid);
@@ -79,15 +96,51 @@ class UsersFirestore {
 
         CollectionReference<Map<String, dynamic>> userCollections = customerReference.collection(customerBillPathDatabase);
         QuerySnapshot<Map<String, dynamic>> userCollectionsSnapshot = await userCollections.get();
-        List<QueryDocumentSnapshot<Map<String, dynamic>>> collectionDocs = userCollectionsSnapshot.docs;
 
         List<Bill> bills = [];
 
-        for (QueryDocumentSnapshot<Map<String, dynamic>> collectionDoc in collectionDocs) {
-          bills.add(Bill.fromJson({
-            "id": collectionDoc.id,
-            "data": collectionDoc.data(),
-          }));
+        for (QueryDocumentSnapshot<Map<String, dynamic>> collectionDoc in userCollectionsSnapshot.docs) {
+          Map<String, dynamic> billData = collectionDoc.data();
+
+          DateTime date = billData['date'].toDate();
+
+          double total = billData['total'] / 1;
+
+          List<Map<String, dynamic>> productsList = (billData['products'] as List<dynamic>).cast<Map<String, dynamic>>();
+
+          List<CartItem> products = [];
+
+          for (Map<String, dynamic> productData in productsList) {
+            int amount = productData['amount'] as int;
+            DocumentReference<Map<String, dynamic>> productReference = productData['product'];
+
+            DocumentSnapshot<Map<String, dynamic>> productSnapshot = await productReference.get();
+
+            if (productSnapshot.exists) {
+              Map<String, dynamic> productData = productSnapshot.data()!;
+
+              Product product = Product(
+                id: productSnapshot.id,
+                data: ProductData.fromJson(productData),
+              );
+
+              products.add(
+                CartItem(
+                  amount: amount,
+                  product: product,
+                ),
+              );
+            }
+          }
+
+          bills.add(Bill(
+            id: collectionDoc.id,
+            data: BillData(
+              date: date,
+              total: total,
+              cartItems: products,
+            ),
+          ));
         }
 
         userApp.data.bills = bills;
@@ -101,10 +154,25 @@ class UsersFirestore {
 
       return ApiResponse<UserApp>(
         isSuccess: false,
-        message: "$errorMessage$dataNotFoundEror",
+        message: "$errorMessage$dataNotFoundErorr",
       );
     } catch (e) {
       return errorMessageRequest<UserApp>(e);
+    }
+  }
+
+  Future<ApiResponse<void>> firebaseUpdateUser(UserApp user) async {
+    DocumentReference<Map<String, dynamic>> documentReference = _userFirestore.collection("${Preferences.getItem<String>("role")!}s").doc(user.id);
+
+    try {
+      await documentReference.update(user.data.toJson());
+
+      return ApiResponse<void>(
+        isSuccess: true,
+        message: "$successMessage$successfullySaved",
+      );
+    } catch (e) {
+      return errorMessageRequest<void>(e);
     }
   }
 }

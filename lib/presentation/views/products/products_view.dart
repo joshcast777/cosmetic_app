@@ -15,27 +15,24 @@ class ProductsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProductProvider>(
-      child: const Text("This is the child"),
-      builder: (context, productProvider, child) {
-        if (productProvider.products.isEmpty) {
-          productProvider.getProducts();
+    final ProductProvider productProvider = context.watch<ProductProvider>();
 
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          return const CustomScrollView(
-            slivers: [
-              SliverAppBarWidget(
-                image: productsAppBar,
-                title: "Productos",
-              ),
-              ProductSliverListWidget(),
-            ],
-          );
-        }
-      },
-    );
+    if (productProvider.products.isEmpty) {
+      productProvider.getProducts();
+
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return const CustomScrollView(
+        slivers: [
+          SliverAppBarWidget(
+            image: productsAppBar,
+            title: "Productos",
+          ),
+          ProductSliverListWidget(),
+        ],
+      );
+    }
   }
 }

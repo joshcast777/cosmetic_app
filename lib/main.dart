@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:provider/provider.dart';
 
 import 'package:cosmetic_app/config/firebase/index.dart';
 
-import 'package:cosmetic_app/presentation/screens/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
 
 import 'package:cosmetic_app/preferences/preferences.dart';
+
+import 'package:cosmetic_app/routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,8 +45,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthProvider authProvider = context.watch<AuthProvider>();
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -54,10 +52,8 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: Colors.pink,
       ),
       title: 'Cosmetic App',
-      home: StreamBuilder<User?>(
-        stream: authProvider.onAuthStateChangesListener(),
-        builder: (_, AsyncSnapshot<User?> snapshot) => snapshot.hasData ? MainScreen() : const AuthScreen(),
-      ),
+      initialRoute: AppRoutes.initialRoute,
+      routes: AppRoutes.getRoutes(),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosmetic_app/constants/success/success_constants.dart';
 
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
@@ -8,6 +9,22 @@ import 'package:cosmetic_app/constants/database/database_constants.dart';
 
 class ProductsFirestore {
   final FirebaseFirestore _productFirestore = FirebaseFirestore.instance;
+
+  Future<ApiResponse<String>> firebaseAddProduct(ProductData product) async {
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference = _productFirestore.collection(productsPathDatabase).doc();
+
+      await documentReference.set(product.toJson());
+
+      return ApiResponse<String>(
+        isSuccess: true,
+        message: "$successMessage$successfullySaved",
+        data: documentReference.id,
+      );
+    } catch (e) {
+      return errorMessageRequest<String>(e);
+    }
+  }
 
   Future<ApiResponse<List<Product>>> firebaseGetProducts() async {
     try {
@@ -29,6 +46,36 @@ class ProductsFirestore {
       );
     } catch (e) {
       return errorMessageRequest<List<Product>>(e);
+    }
+  }
+
+  Future<ApiResponse<void>> firebaseUpdateProduct(Product product) async {
+    DocumentReference<Map<String, dynamic>> documentReference = _productFirestore.collection(productsPathDatabase).doc(product.id);
+
+    try {
+      await documentReference.update(product.data.toJson());
+
+      return ApiResponse<void>(
+        isSuccess: true,
+        message: "$successMessage$successfullySaved",
+      );
+    } catch (e) {
+      return errorMessageRequest<void>(e);
+    }
+  }
+
+  Future<ApiResponse<void>> firebaseDeleteProduct(String id) async {
+    DocumentReference<Map<String, dynamic>> documentReference = _productFirestore.collection(productsPathDatabase).doc(id);
+
+    try {
+      await documentReference.delete();
+
+      return ApiResponse<void>(
+        isSuccess: true,
+        message: "$successMessage$deletedProductConstant",
+      );
+    } catch (e) {
+      return errorMessageRequest<void>(e);
     }
   }
 }

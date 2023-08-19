@@ -1,3 +1,4 @@
+import 'package:cosmetic_app/constants/models/model_constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cosmetic_app/config/firebase/index.dart';
@@ -5,7 +6,7 @@ import 'package:cosmetic_app/config/firebase/index.dart';
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 class CartProvider extends ChangeNotifier {
-  List<CartItem> _cartItems = [];
+  List<CartItem> _cartItems = cartItemsConstant;
   bool _isLoading = false;
   String _message = "";
   double _total = 0.0;
@@ -59,7 +60,7 @@ class CartProvider extends ChangeNotifier {
 
     _message = response.message.split("/")[1];
     _total = 0.0;
-    _cartItems = [];
+    _cartItems = cartItemsConstant;
     _isLoading = false;
 
     notifyListeners();
@@ -93,4 +94,11 @@ class CartProvider extends ChangeNotifier {
   void removeProductFromCart(Product product) => removeFromCart(_cartItems.firstWhere((CartItem cartItem) => cartItem.product == product));
 
   void _calculateTotal() => _total = _cartItems.isEmpty ? 0.0 : _cartItems.map((CartItem cartItem) => cartItem.amount * cartItem.product.data.price).reduce((double totalAcumulator, double subTotal) => totalAcumulator + subTotal);
+
+  void clearAll() {
+    _cartItems = cartItemsConstant;
+    _isLoading = false;
+    _message = "";
+    _total = 0.0;
+  }
 }

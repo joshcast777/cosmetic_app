@@ -24,47 +24,37 @@ class Product {
 }
 
 class ProductData {
-  final String _imageUrl;
-  final String _name;
-  final String _summary;
-  final String _description;
-  final double _price;
+  String description;
+  String fullPath;
+  String imageUrl;
+  String name;
+  double price;
+  String summary;
 
   ProductData({
-    required String imageUrl,
-    required String name,
-    required String summary,
-    required String description,
-    required double price,
-  })  : _imageUrl = imageUrl,
-        _name = name,
-        _summary = summary,
-        _description = description,
-        _price = price;
-
-  String get imageUrl => _imageUrl;
-
-  String get name => _name;
-
-  String get summary => _summary;
-
-  String get description => _description;
-
-  double get price => _price;
+    required this.description,
+    required this.fullPath,
+    required this.imageUrl,
+    required this.name,
+    required this.price,
+    required this.summary,
+  });
 
   factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
+        description: json["description"],
+        fullPath: json["fullPath"],
         imageUrl: json["imageUrl"],
         name: json["name"],
-        summary: json["summary"],
-        description: json["description"],
         price: json["price"]?.toDouble(),
+        summary: json["summary"],
       );
 
   Map<String, dynamic> toJson() => {
-        "imageUrl": _imageUrl,
-        "name": _name,
-        "summary": _summary,
-        "description": _description,
-        "price": _price,
+        "description": description,
+        "fullPath": fullPath,
+        "imageUrl": imageUrl,
+        "name": name,
+        "price": price,
+        "summary": summary,
       };
 }

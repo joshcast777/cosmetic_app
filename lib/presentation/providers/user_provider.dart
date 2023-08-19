@@ -16,7 +16,7 @@ class UserProvider extends ChangeNotifier {
 
   String get message => _message;
 
-  void addUser(UserAppData userAppData) async {
+  Future<void> addUser(UserAppData userAppData) async {
     _isLoading = true;
 
     notifyListeners();
@@ -38,5 +38,10 @@ class UserProvider extends ChangeNotifier {
     _isLoading = false;
 
     notifyListeners();
+  }
+
+  void clearAll() {
+    _isLoading = false;
+    _message = "";
   }
 }

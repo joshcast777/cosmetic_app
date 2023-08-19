@@ -1,4 +1,7 @@
+import 'package:cosmetic_app/presentation/providers/index.dart';
 import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
 
 class BottomNavBarWidget extends StatelessWidget {
   final int _currentIndex;
@@ -15,6 +18,10 @@ class BottomNavBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    final AuthProvider authProvider = context.watch<AuthProvider>();
+
+    final String role = authProvider.role;
+
     return BottomNavigationBar(
       type: BottomNavigationBarType.shifting,
       backgroundColor: const Color.fromRGBO(55, 57, 84, 1),
@@ -28,12 +35,19 @@ class BottomNavBarWidget extends StatelessWidget {
           label: "Inicio",
           backgroundColor: colorScheme.primary,
         ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.shopping_cart_outlined),
-          activeIcon: const Icon(Icons.shopping_cart),
-          label: "Carrito",
-          backgroundColor: colorScheme.tertiary,
-        ),
+        role == "admin"
+            ? BottomNavigationBarItem(
+                icon: const Icon(Icons.add_box_outlined),
+                activeIcon: const Icon(Icons.add_box),
+                label: "Nuevo producto",
+                backgroundColor: colorScheme.tertiary,
+              )
+            : BottomNavigationBarItem(
+                icon: const Icon(Icons.shopping_cart_outlined),
+                activeIcon: const Icon(Icons.shopping_cart),
+                label: "Carrito",
+                backgroundColor: colorScheme.tertiary,
+              ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.person_outline),
           activeIcon: const Icon(Icons.person),

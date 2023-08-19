@@ -80,16 +80,14 @@ class _SignInFormViewState extends State<SignInFormView> {
               children: [
                 FormFieldWidget(
                   keyboardType: TextInputType.emailAddress,
-                  // preffixIcon: Icons.email_outlined,
                   preffixIcon: Icon(
                     Icons.email_outlined,
                     color: colorScheme.primary.withOpacity(0.75),
                     size: 25.0,
                   ),
-                  // label: "Correo electrónico",
                   label: const Text("Correo electrónico"),
                   onChanged: (String value) => userAuth.email = value,
-                  validator: (String? value) => fieldValidator(value, emailRegExp),
+                  validator: (String? value) => fieldValidator(value, regExp: emailRegExp),
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -105,7 +103,7 @@ class _SignInFormViewState extends State<SignInFormView> {
                   suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off,
                   label: const Text("Contraseña"),
                   onChanged: (String value) => userAuth.password = value,
-                  validator: (String? value) => fieldValidator(value, passwordRegExp),
+                  validator: (String? value) => fieldValidator(value, regExp: passwordRegExp),
                 ),
                 authProvider.isLoading
                     ? Container(
@@ -117,10 +115,10 @@ class _SignInFormViewState extends State<SignInFormView> {
                         ),
                       )
                     : SubmitAuthFormButtonWidet(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
 
-                          authProvider.signInUser(userAuth);
+                          await authProvider.signInUser(userAuth);
                         },
                         label: signIn,
                       ),

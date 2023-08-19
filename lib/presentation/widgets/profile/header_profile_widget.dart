@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cosmetic_app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -19,28 +20,43 @@ class HeaderProfileWidget extends StatelessWidget {
 
     final String userAppLastName = authProvider.userApp.data.lastName[0].toUpperCase();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.onSurface.withOpacity(0.5),
-      ),
-      padding: const EdgeInsets.only(
-        top: 75.0,
-        bottom: 50.0,
-      ),
-      margin: const EdgeInsets.only(
-        bottom: 50.0,
-      ),
-      child: CircleAvatar(
-        radius: 75.0,
-        backgroundColor: _randomColor().withOpacity(0.75),
-        child: Text(
-          "$userAppName$userAppLastName",
-          style: const TextStyle(
-            fontSize: 75.0,
-            color: Colors.white,
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: colorScheme.onSurface.withOpacity(0.5),
+          ),
+          padding: const EdgeInsets.only(
+            top: 75.0,
+            bottom: 50.0,
+          ),
+          margin: const EdgeInsets.only(
+            bottom: 50.0,
+          ),
+          child: CircleAvatar(
+            radius: 75.0,
+            backgroundColor: _randomColor().withOpacity(0.75),
+            child: Text(
+              "$userAppName$userAppLastName",
+              style: const TextStyle(
+                fontSize: 75.0,
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
-      ),
+        Positioned(
+          top: 10.0,
+          right: 10.0,
+          child: SafeArea(
+            child: FilledButton(
+              onPressed: () => Navigator.pushNamed(context, AppRoutes.profileFormRoute),
+              child: const Text("Editar"),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

@@ -25,9 +25,10 @@ class CartView extends StatelessWidget {
 
     if (cartProvider.message.isNotEmpty) {
       Future.microtask(
-        () => _showAlertDialog(
+        () => showDialogWidget<void>(
           context,
-          cartProvider.message,
+          cartProvider.message.split("/")[0],
+          cartProvider.message.split("/")[1],
           () {
             Navigator.of(context).pop();
 
@@ -51,7 +52,15 @@ class CartView extends StatelessWidget {
               SliverList(
                 delegate: SliverChildListDelegate(
                   cartProvider.cartItems.isEmpty
-                      ? [const EmptyCartListWidget()]
+                      ? [
+                          EmptyCartListWidget(
+                            buttonPressed: () => viewProvider.currentIndex = 0,
+                            buttonText: "Nuestros productos",
+                            icon: Icons.sentiment_dissatisfied_outlined,
+                            title: "¡Qué mal!",
+                            text: "No has agreado productos a tu carrito, te propongo ver nuestro catálogo",
+                          )
+                        ]
                       : cartProvider.cartItems
                           .map((CartItem cartItem) => CartItemWidget(
                                 cartItem: cartItem,
@@ -80,7 +89,11 @@ class CartView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(borderRdaius),
                       ),
                     ),
-                    onPressed: cartProvider.isLoading ? null : () => cartProvider.addBillToUser(),
+                    onPressed: cartProvider.isLoading
+                        ? null
+                        : () {
+                            cartProvider.addBillToUser();
+                          },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -101,58 +114,8 @@ class CartView extends StatelessWidget {
                       ],
                     ),
                   ),
-          )
-      ],
-    );
-  }
-
-  Future<dynamic> _showAlertDialog(BuildContext context, String message, VoidCallback onPressedAction) {
-    // Future<dynamic> _showAlertDialog(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.check_circle_rounded,
-                size: 75.0,
-              ),
-              const SizedBox(
-                width: 20.0,
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Éxito",
-                    style: TextStyle(
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    message,
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ],
           ),
-          actions: [
-            TextButton(
-              onPressed: onPressedAction,
-              child: const Text("Aceptar"),
-            ),
-          ],
-        );
-      },
+      ],
     );
   }
 }
