@@ -10,9 +10,12 @@ import 'package:cosmetic_app/utils/index.dart';
 import 'package:cosmetic_app/constants/database/database_constants.dart';
 import 'package:cosmetic_app/constants/errors/error_constants.dart';
 
+/// Clase que gestiona los usuarios
 class UsersFirestore {
+  /// Instancia de la Firebase Firestore
   final FirebaseFirestore _userFirestore = FirebaseFirestore.instance;
 
+  /// Agrega un usuario como cliente a la Firebase Firestore
   Future<ApiResponse<void>> firebaseAddUser(UserApp userApp) async {
     DocumentReference<Map<String, dynamic>> documentReference = FirebaseFirestore.instance.collection(customersPathDatabase).doc(userApp.id);
 
@@ -28,6 +31,7 @@ class UsersFirestore {
     }
   }
 
+  /// Elimina un usuario de la Firebase Firestore
   Future<ApiResponse<void>> firebaseDeleteUser(String role, UserApp userApp) async {
     try {
       DocumentReference documentReference = FirebaseFirestore.instance.collection("${role}s").doc(userApp.id);
@@ -53,6 +57,7 @@ class UsersFirestore {
     }
   }
 
+  /// Obtiene los dadtos de un usuario administrador de la Firebase Firestore
   Future<ApiResponse<UserApp>> firebaseGetAdmin() async {
     final String? uid = Preferences.getItem<String>("uid");
 
@@ -92,6 +97,7 @@ class UsersFirestore {
     }
   }
 
+  /// Obtiene los dadtos de un usuario cliente de la Firebase Firestore
   Future<ApiResponse<UserApp>> firebaseGetCustomer() async {
     final String? uid = Preferences.getItem<String>("uid");
 
@@ -179,6 +185,7 @@ class UsersFirestore {
     }
   }
 
+  /// Actualiza los datos de un usuario en la Firebase Firestore
   Future<ApiResponse<void>> firebaseUpdateUser(UserApp user) async {
     final String? role = Preferences.getItem<String>("role");
 

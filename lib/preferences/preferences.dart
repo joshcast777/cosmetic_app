@@ -1,10 +1,14 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Clase que gestiona datos guardados en local (preferencias)
 class Preferences {
+  /// Instancia de las SharedPreferences
   static late SharedPreferences _preferencesInstance;
 
+  /// Función que inicializa las SharedPreferences
   static Future<void> initialize() async => _preferencesInstance = await SharedPreferences.getInstance();
 
+  /// Guarda un elemento en las SharedPreferences
   static Future<bool> setItem<T>(String key, T value) async {
     if (T == String) return await _setStringItem(key, value as String);
 
@@ -13,6 +17,7 @@ class Preferences {
     return false;
   }
 
+  /// Obtiene un elemento de las ShardPreferences
   static T? getItem<T>(String key) {
     if (T == String) return _getStringItem(key) as T?;
 
@@ -21,6 +26,7 @@ class Preferences {
     return null;
   }
 
+  /// Elimina un elemento de las SharedPreferences
   static Future<bool> removeItem(String key) async {
     return await _preferencesInstance.remove(key);
   }

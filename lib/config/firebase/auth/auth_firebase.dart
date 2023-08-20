@@ -5,11 +5,15 @@ import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 import 'package:cosmetic_app/utils/index.dart';
 
+/// Clase que gestiona la autenticación del usuario
 class AuthFirebase {
+  /// Instancia de Firebase Authentication
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  /// Obtiene el usuario autenticado actual
   User? firebaseGetCurrentUser() => FirebaseAuth.instance.currentUser;
 
+  /// Elimina un usuario de Firebase Authentication
   Future<ApiResponse<void>> firebaseDeleteUser(String email, String password) async {
     User? user = firebaseGetCurrentUser();
 
@@ -30,8 +34,10 @@ class AuthFirebase {
     }
   }
 
+  /// Función que está a la escucha de cuando el estado de la autenticación ha cambiado
   Stream<User?> firebaseOnAuthStateChangesListener() => _firebaseAuth.authStateChanges();
 
+  /// Inicia sesión a un usuario en Firebase Authentication
   Future<ApiResponse<void>> firebaseSignInUser(UserAuth userAuth) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
@@ -48,6 +54,7 @@ class AuthFirebase {
     }
   }
 
+  /// Cierra la sesión de un usuario en Firebase Authentication
   Future<ApiResponse<void>> firebaseSignOutUser() async {
     try {
       await _firebaseAuth.signOut();
@@ -61,6 +68,7 @@ class AuthFirebase {
     }
   }
 
+  /// Registra a un usuario en Firebase Authentication
   Future<ApiResponse<void>> firebaseSignUpUser(UserAuth userAuth) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
@@ -77,6 +85,7 @@ class AuthFirebase {
     }
   }
 
+  /// Actualiza la contraseña de un usuario en Firebase Authentication
   Future<ApiResponse<void>> firebaseUpdatePassword(UserApp userApp, String password) async {
     User? user = firebaseGetCurrentUser();
 
@@ -90,13 +99,14 @@ class AuthFirebase {
 
       return ApiResponse<void>(
         isSuccess: true,
-        message: "$successMessage$successfullyEmailUpdate",
+        message: "",
       );
     } catch (e) {
       return errorMessageRequest(e);
     }
   }
 
+  /// Actualiza el correo de un usuario en Firebase Authentication
   Future<ApiResponse<void>> firebaseUpdateEmail(UserApp userApp, String email) async {
     User? user = firebaseGetCurrentUser();
 
@@ -110,7 +120,7 @@ class AuthFirebase {
 
       return ApiResponse<void>(
         isSuccess: true,
-        message: "$successMessage$successfullyEmailUpdate",
+        message: "",
       );
     } catch (e) {
       return errorMessageRequest(e);

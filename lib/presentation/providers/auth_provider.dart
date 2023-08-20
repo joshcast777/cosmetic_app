@@ -10,6 +10,7 @@ import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 import 'package:cosmetic_app/preferences/preferences.dart';
 
+/// Clase que gestiona un estado global para la autenticación
 class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   String _message = "";
@@ -48,6 +49,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Elimina un usuario
   Future<bool> deleteUser() async {
     _isLoading = true;
 
@@ -80,8 +82,10 @@ class AuthProvider extends ChangeNotifier {
     return true;
   }
 
+  /// Un observador que está pendiente ante cambios en la autenticación del usuario
   Stream<User?> onAuthStateChangesListener() => _authFirebase.firebaseOnAuthStateChangesListener();
 
+  /// Obitiene los datos del usuario administrador
   Future<void> getAdmin() async {
     _isLoading = true;
 
@@ -105,6 +109,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Obitne los datos del usuario cliente
   Future<void> getCustomer() async {
     _isLoading = true;
 
@@ -128,6 +133,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Inicia sesión de un usuario
   Future<void> signInUser(UserAuth userAuth) async {
     _isLoading = true;
 
@@ -168,6 +174,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Cierra la sesión de un usuario
   void signOutUser() async {
     _isLoading = true;
 
@@ -194,6 +201,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Registra un usuario
   Future<void> signUpUser(UserAuth userAuth) async {
     _isLoading = true;
 
@@ -229,6 +237,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Actualiza los datos de un usuario
   Future<void> updateUser(UserApp user) async {
     ApiResponse<void> response;
 
@@ -236,28 +245,24 @@ class AuthProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    if (user.data.email != userApp.data.email) {
-      response = await _authFirebase.firebaseUpdateEmail(userApp, user.data.email);
+    response = await _authFirebase.firebaseUpdateEmail(userApp, user.data.email);
 
-      if (!response.isSuccess) {
-        _message = response.message;
-        _isLoading = false;
+    if (!response.isSuccess) {
+      _message = response.message;
+      _isLoading = false;
 
-        notifyListeners();
-        return;
-      }
+      notifyListeners();
+      return;
     }
 
-    if (user.data.password != userApp.data.password) {
-      response = await _authFirebase.firebaseUpdatePassword(userApp, user.data.password);
+    response = await _authFirebase.firebaseUpdatePassword(userApp, user.data.password);
 
-      if (!response.isSuccess) {
-        _message = response.message;
-        _isLoading = false;
+    if (!response.isSuccess) {
+      _message = response.message;
+      _isLoading = false;
 
-        notifyListeners();
-        return;
-      }
+      notifyListeners();
+      return;
     }
 
     response = await _userFirebase.firebaseUpdateUser(user);
@@ -277,6 +282,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Deselecciona una factura
   void unselectBill() {
     _selectedBill = billConstant;
 

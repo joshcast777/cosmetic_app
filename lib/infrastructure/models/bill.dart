@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
+/// Modelo de la factura del cliente
 class Bill {
   final String _id;
   final BillData _data;
@@ -21,6 +22,7 @@ class Bill {
       );
 }
 
+/// Modelo de los datos de la factura del cliente
 class BillData {
   final DateTime _date;
   final double _total;

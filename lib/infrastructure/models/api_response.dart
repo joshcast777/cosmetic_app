@@ -1,3 +1,4 @@
+/// Modelo de la respuesta de las peticiones
 class ApiResponse<T> {
   final bool _isSuccess;
   final String _message;

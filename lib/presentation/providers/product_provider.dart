@@ -7,6 +7,7 @@ import 'package:cosmetic_app/config/firebase/index.dart';
 
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
+/// Clase que gestiona un estado global para los productos
 class ProductProvider extends ChangeNotifier {
   bool _isLoading = false;
   String _message = "";
@@ -36,6 +37,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Agrega un producto
   Future<void> addProduct(ProductData productData, File selectedPicture) async {
     _isLoading = true;
 
@@ -83,19 +85,24 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Limpia todo el estado global
   void clearAll() {
     _isLoading = false;
     _message = "";
     _products = productsConstant;
     _selectedProduct = productConstant;
+
+    notifyListeners();
   }
 
+  /// Limpia la lista de productos
   void clearProducts() {
     _products = [];
 
     notifyListeners();
   }
 
+  /// Elimina un producto
   Future<void> deleteProduct() async {
     _isLoading = true;
 
@@ -127,6 +134,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Obtiene los productos al inicio de la ejecución
   Future<void> getProductsByInit() async {
     _isLoading = true;
 
@@ -147,6 +155,7 @@ class ProductProvider extends ChangeNotifier {
     return;
   }
 
+  /// Obtiene todos los productos
   Future<void> getProducts() async {
     _isLoading = true;
 
@@ -168,6 +177,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Actualiza los datos de un productos
   Future updateProduct(Product product, File? selectedPicture) async {
     _isLoading = true;
 
@@ -205,6 +215,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Deselecciona un producto
   void unselectProduct() {
     _selectedProduct = productConstant;
 

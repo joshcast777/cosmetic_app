@@ -22,9 +22,20 @@ class _ProfileEditingFormScreenState extends State<ProfileEditingFormScreen> {
   bool _obscureText = true;
   bool _showDialog = false;
   bool _closeSession = false;
-  late UserApp _userApp;
+  late UserApp _userApp = UserApp.copy(userAppConstant);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<AuthProvider>().addListener(() {
+      setState(() {
+        _userApp = UserApp.copy(context.read<AuthProvider>().userApp);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +46,6 @@ class _ProfileEditingFormScreenState extends State<ProfileEditingFormScreen> {
     final UserProvider userProvider = context.read<UserProvider>();
     final CartProvider cartProvider = context.read<CartProvider>();
     final ViewProvider viewProvider = context.read<ViewProvider>();
-
-    setState(() => _userApp = UserApp.copy(authProvider.userApp));
 
     if (authProvider.message.isNotEmpty && !authProvider.isLoading && _showDialog) {
       Future.microtask(
@@ -52,8 +61,8 @@ class _ProfileEditingFormScreenState extends State<ProfileEditingFormScreen> {
 
               setState(() => _formKey.currentState!.reset());
 
-              authProvider.userApp = _userApp;
-              _userApp = userAppConstant;
+              // authProvider.userApp = UserApp.copy(_userApp);
+              _userApp = UserApp.copy(userAppConstant);
 
               if (_closeSession) {
                 authProvider.signOutUser();
@@ -192,8 +201,6 @@ class _ProfileEditingFormScreenState extends State<ProfileEditingFormScreen> {
                           if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
 
                           await authProvider.updateUser(_userApp);
-
-                          // authProvider.role == "admin" ? await authProvider.getAdmin() : await authProvider.getCustomer();
 
                           if (_userApp.data.email != authProvider.userApp.data.email || _userApp.data.password != authProvider.userApp.data.password) setState(() => _closeSession = true);
 

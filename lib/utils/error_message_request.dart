@@ -4,6 +4,7 @@ import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 import 'package:cosmetic_app/constants/errors/error_constants.dart';
 
+/// Devuelve uns respuesta de error de una petición en caso de fallar
 ApiResponse<T> errorMessageRequest<T>(Object e) {
   return ApiResponse<T>(
     isSuccess: false,

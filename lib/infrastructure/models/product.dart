@@ -1,3 +1,4 @@
+/// Modelo del producto
 class Product {
   final String _id;
   final ProductData _data;
@@ -23,6 +24,7 @@ class Product {
       };
 }
 
+/// Modelo de los datos del producto
 class ProductData {
   String description;
   String fullPath;

@@ -1,5 +1,6 @@
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
+/// Modelo de lo artículos del carrito de compras
 class CartItem {
   int amount;
 

@@ -6,6 +6,7 @@ import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 import 'package:cosmetic_app/preferences/preferences.dart';
 
+/// Clase que gestiona un estado global para el usuario
 class UserProvider extends ChangeNotifier {
   bool _isLoading = false;
   String _message = "";
@@ -16,6 +17,7 @@ class UserProvider extends ChangeNotifier {
 
   String get message => _message;
 
+  /// Agrega un usuario
   Future<void> addUser(UserAppData userAppData) async {
     _isLoading = true;
 
@@ -44,8 +46,11 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Limpia todo el estado global
   void clearAll() {
     _isLoading = false;
     _message = "";
+
+    notifyListeners();
   }
 }

@@ -6,9 +6,12 @@ import 'package:cosmetic_app/infrastructure/models/index.dart';
 import 'package:cosmetic_app/utils/error_message_request.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+/// Clase que gestiona las iágenes de los productos
 class StorageFirebase {
+  /// Instancia de Firebase Storage
   final FirebaseStorage storageFirebase = FirebaseStorage.instance;
 
+  /// Sube una imagen a Firebase Storage
   Future<ApiResponse<List<String>>> firebaseAddImage(File selectedPicture, String uid) async {
     final Reference productsReference = storageFirebase.ref().child("$storageProductsFolderConstant/$uid.${selectedPicture.path.split(".").last}");
 
@@ -29,6 +32,7 @@ class StorageFirebase {
     }
   }
 
+  /// Elimina una imagen de Firebase Storage
   Future<ApiResponse<void>> firebaseDeleteImage(String fullPath) async {
     final Reference reference = storageFirebase.ref().child(fullPath);
 

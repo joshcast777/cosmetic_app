@@ -7,9 +7,12 @@ import 'package:cosmetic_app/utils/index.dart';
 
 import 'package:cosmetic_app/constants/database/database_constants.dart';
 
+/// Clase eque gestiona los productos
 class ProductsFirestore {
+  /// Instancia de la Firebase Firestore
   final FirebaseFirestore _productFirestore = FirebaseFirestore.instance;
 
+  /// Agrega un producto a la Firebase Firestore
   Future<ApiResponse<String>> firebaseAddProduct(ProductData product) async {
     try {
       DocumentReference<Map<String, dynamic>> documentReference = _productFirestore.collection(productsPathDatabase).doc();
@@ -26,6 +29,7 @@ class ProductsFirestore {
     }
   }
 
+  /// Obtiene todos los productos de la Firebase Firestore
   Future<ApiResponse<List<Product>>> firebaseGetProducts() async {
     try {
       final QuerySnapshot<Map<String, dynamic>> querySnapshot = await _productFirestore.collection(productsPathDatabase).get();
@@ -49,6 +53,7 @@ class ProductsFirestore {
     }
   }
 
+  /// Actualiza los datos de un producto de la Firebase Firestore
   Future<ApiResponse<void>> firebaseUpdateProduct(Product product) async {
     DocumentReference<Map<String, dynamic>> documentReference = _productFirestore.collection(productsPathDatabase).doc(product.id);
 
@@ -64,6 +69,7 @@ class ProductsFirestore {
     }
   }
 
+  /// Elimina un producto e la Firebase Firestore
   Future<ApiResponse<void>> firebaseDeleteProduct(String id) async {
     DocumentReference<Map<String, dynamic>> documentReference = _productFirestore.collection(productsPathDatabase).doc(id);
 

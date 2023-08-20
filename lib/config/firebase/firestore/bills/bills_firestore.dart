@@ -6,9 +6,12 @@ import 'package:cosmetic_app/constants/database/database_constants.dart';
 import 'package:cosmetic_app/constants/errors/error_constants.dart';
 import 'package:cosmetic_app/constants/success/success_constants.dart';
 
+/// Clase que gestiona las facturas de un cliente
 class BillsFirestore {
+  /// Instancia de la Firebase Firestore
   final FirebaseFirestore _billFirestore = FirebaseFirestore.instance;
 
+  /// Agrega una factura a un usuario cliente en la Fireabse Firestore
   Future<ApiResponse<void>> firebaseAddBillToUser(String userId, BillData billData) async {
     try {
       DocumentReference userDocument = _billFirestore.collection(customersPathDatabase).doc(userId);

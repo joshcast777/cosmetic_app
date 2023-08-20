@@ -6,6 +6,7 @@ import 'package:cosmetic_app/config/firebase/index.dart';
 
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
+/// Clase que gestiona un estado global para el carrito de compras
 class CartProvider extends ChangeNotifier {
   List<CartItem> _cartItems = List.from(cartItemsConstant);
   bool _isLoading = false;
@@ -28,6 +29,7 @@ class CartProvider extends ChangeNotifier {
 
   double get total => _total;
 
+  /// Agrega un elemento al carrito
   void addToCart(Product product) {
     _cartItems.add(CartItem(
       amount: 1,
@@ -38,6 +40,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Agrega una factura al cliente
   Future<void> addBillToUser() async {
     _isLoading = true;
 
@@ -71,6 +74,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Disminuye la cantidad de un elemento del carrito de compras
   void decreaseAmount(CartItem cartItem) {
     final int index = _cartItems.indexOf(cartItem);
 
@@ -80,6 +84,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Aumenta la cantidad de un elemento del carrito de compras
   void increaseAmount(CartItem cartItem) {
     final int index = _cartItems.indexOf(cartItem);
 
@@ -89,6 +94,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Quita un elemento del carrito de compras
   void removeFromCart(CartItem cartItem) {
     _cartItems.remove(cartItem);
 
@@ -96,14 +102,18 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Quita un elemento del carrito de compras basado en el producto
   void removeProductFromCart(Product product) => removeFromCart(_cartItems.firstWhere((CartItem cartItem) => cartItem.product == product));
 
   void _calculateTotal() => _total = _cartItems.isEmpty ? 0.0 : _cartItems.map((CartItem cartItem) => cartItem.amount * cartItem.product.data.price).reduce((double totalAcumulator, double subTotal) => totalAcumulator + subTotal);
 
+  /// Limpia todo el estado global
   void clearAll() {
     _cartItems = List.from(cartItemsConstant);
     _isLoading = false;
     _message = "";
     _total = 0.0;
+
+    notifyListeners();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
+/// Modelo del usuario de la aplicación
 class UserApp {
   final String _id;
   final UserAppData _data;
@@ -24,6 +25,7 @@ class UserApp {
       );
 }
 
+/// Modelo de los datos del usuario de la aplicación
 class UserAppData {
   String dni;
   String name;
