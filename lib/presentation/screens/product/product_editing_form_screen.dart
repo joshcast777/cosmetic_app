@@ -131,7 +131,13 @@ class _ProductEditingFormScreenState extends State<ProductEditingFormScreen> {
                                   onPressed: () async {
                                     final XFile? pickedImage = await selectImage();
 
-                                    setState(() => _selectedPicture = File(pickedImage!.path));
+                                    if (pickedImage == null) {
+                                      setState(() => _emptySelectedImage = false);
+
+                                      return;
+                                    }
+
+                                    setState(() => _selectedPicture = File(pickedImage.path));
 
                                     if (_selectedPicture != null) setState(() => _emptySelectedImage = false);
                                   },
@@ -152,7 +158,13 @@ class _ProductEditingFormScreenState extends State<ProductEditingFormScreen> {
                                   onPressed: () async {
                                     final XFile? pickedImage = await takeImage();
 
-                                    setState(() => _selectedPicture = File(pickedImage!.path));
+                                    if (pickedImage == null) {
+                                      setState(() => _emptySelectedImage = false);
+
+                                      return;
+                                    }
+
+                                    setState(() => _selectedPicture = File(pickedImage.path));
 
                                     if (_selectedPicture != null) setState(() => _emptySelectedImage = false);
                                   },
@@ -245,7 +257,7 @@ class _ProductEditingFormScreenState extends State<ProductEditingFormScreen> {
 
                                       if (!_emptySelectedImage) setState(() => _emptySelectedImage = false);
 
-                                      await productProvider.updateProduct(_product, _selectedPicture!);
+                                      await productProvider.updateProduct(_product, _selectedPicture);
 
                                       if (!_showDialog) setState(() => _showDialog = true);
                                     },
@@ -276,6 +288,8 @@ class _ProductEditingFormScreenState extends State<ProductEditingFormScreen> {
                                   _emptySelectedImage = false;
                                   _formKey.currentState!.reset();
                                 });
+
+                                Navigator.pop(context);
 
                                 viewProvider.currentIndex = 0;
                               },

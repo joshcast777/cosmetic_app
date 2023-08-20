@@ -16,9 +16,9 @@ class HeaderProfileWidget extends StatelessWidget {
 
     final AuthProvider authProvider = context.watch<AuthProvider>();
 
-    final String userAppName = authProvider.userApp.data.name[0].toUpperCase();
+    final String userAppName = authProvider.userApp.data.name.isEmpty ? "" : authProvider.userApp.data.name[0].toUpperCase();
 
-    final String userAppLastName = authProvider.userApp.data.lastName[0].toUpperCase();
+    final String userAppLastName = authProvider.userApp.data.lastName.isEmpty ? "" : authProvider.userApp.data.lastName[0].toUpperCase();
 
     return Stack(
       children: [

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import 'package:cosmetic_app/constants/success/success_constants.dart';
 import 'package:cosmetic_app/infrastructure/models/index.dart';
-import 'package:cosmetic_app/preferences/preferences.dart';
 import 'package:cosmetic_app/presentation/providers/index.dart';
 import 'package:cosmetic_app/presentation/views/products/index.dart';
 import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
@@ -23,15 +22,14 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
-    final CartProvider cartProvider = context.read<CartProvider>();
+    final AuthProvider authProvider = context.watch<AuthProvider>();
+    final CartProvider cartProvider = context.watch<CartProvider>();
     final ProductProvider productProvider = context.watch<ProductProvider>();
     final ViewProvider viewProvider = context.read<ViewProvider>();
 
     Product selectedProduct = productProvider.selectedProduct;
 
-    final String? role = Preferences.getItem<String>("role");
+    final String role = authProvider.role;
 
     if (productProvider.message.isNotEmpty && !productProvider.isLoading && _showDialog) {
       Future.microtask(
@@ -78,26 +76,6 @@ class _ProductScreenState extends State<ProductScreen> {
           floatingActionButton: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              if (role == "admin")
-                FloatingActionButton(
-                  backgroundColor: colorScheme.error,
-                  mini: true,
-                  onPressed: () async {
-                    await productProvider.deleteProduct();
-
-                    await productProvider.getProducts();
-
-                    setState(() => _showDialog = true);
-                  },
-                  child: Icon(
-                    Icons.delete_forever,
-                    color: colorScheme.onError,
-                  ),
-                ),
-              if (role == "admin")
-                const SizedBox(
-                  height: 10.0,
-                ),
               FloatingActionButton(
                 onPressed: () {
                   if (role == "admin") {
@@ -107,10 +85,18 @@ class _ProductScreenState extends State<ProductScreen> {
                       cartProvider.addToCart(selectedProduct);
 
                       showSnackBar(context, "Agregado al carrito", "Deshacer", snackBarActionOnPressed: () => cartProvider.removeProductFromCart(selectedProduct));
+                    } else {
+                      cartProvider.removeProductFromCart(selectedProduct);
+
+                      showSnackBar(context, "Eliminado del carrito", "Deshacer", snackBarActionOnPressed: () => cartProvider.addToCart(selectedProduct));
                     }
                   }
                 },
-                child: role == "admin" ? const Icon(Icons.edit) : const Icon(Icons.add_shopping_cart_rounded),
+                child: role == "admin"
+                    ? const Icon(Icons.edit)
+                    : cartProvider.cartItems.any((CartItem cartItem) => cartItem.product == selectedProduct)
+                        ? const Icon(Icons.delete)
+                        : const Icon(Icons.add_shopping_cart_rounded),
               ),
             ],
           ),

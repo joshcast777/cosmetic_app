@@ -36,7 +36,6 @@ class _SignUpFormViewState extends State<SignUpFormView> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     final AuthProvider authProvider = context.watch<AuthProvider>();
-    final ProductProvider productProvider = context.watch<ProductProvider>();
     final UserProvider userProvider = context.watch<UserProvider>();
 
     if (authProvider.message.isNotEmpty && _message != authProvider.message) {
@@ -161,14 +160,12 @@ class _SignUpFormViewState extends State<SignUpFormView> {
                         onPressed: () async {
                           if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
 
-                          authProvider.signUpUser(UserAuth(
+                          await authProvider.signUpUser(UserAuth(
                             email: _userAppData.email,
                             password: _userAppData.password,
                           ));
 
                           if (Preferences.getItem<bool>("isAuthenticated") != null && Preferences.getItem<bool>("isAuthenticated")!) userProvider.addUser(_userAppData);
-
-                          await productProvider.getProducts();
                         },
                         label: signUp,
                       ),

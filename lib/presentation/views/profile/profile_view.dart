@@ -10,8 +10,34 @@ import 'package:cosmetic_app/presentation/widgets/profile/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  late BuildContext _widgetContext;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _widgetContext = context;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final AuthProvider authProvider = Provider.of<AuthProvider>(_widgetContext, listen: false);
+
+      final UserApp userApp = authProvider.userApp;
+
+      if (userApp.id == "") {
+          await authProvider.getCustomer();
+
+          if (userApp.id == "") await authProvider.getAdmin();
+        }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +48,6 @@ class ProfileView extends StatelessWidget {
     final ViewProvider viewProvider = context.watch<ViewProvider>();
 
     final UserApp userApp = authProvider.userApp;
-
-    void getUser() async {
-      if (userApp.id == "") {
-        await authProvider.getCustomer();
-
-        if (userApp.id == "") await authProvider.getAdmin();
-      }
-    }
-
-    getUser();
 
     return SingleChildScrollView(
       child: authProvider.isLoading

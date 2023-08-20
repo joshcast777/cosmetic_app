@@ -1,4 +1,3 @@
-import 'package:cosmetic_app/preferences/preferences.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -16,7 +15,9 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String? role = Preferences.getItem<String>("role");
+    final AuthProvider authProvider = context.watch<AuthProvider>();
+
+    final String role = authProvider.role;
 
     final List<Widget> screens = [
       const ProductsView(),

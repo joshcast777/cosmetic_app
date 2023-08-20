@@ -127,7 +127,27 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Product>> getProducts() async {
+  Future<void> getProductsByInit() async {
+    _isLoading = true;
+
+    ApiResponse<List<Product>> response = await _productsFirestore.firebaseGetProducts();
+
+    if (!response.isSuccess) {
+      _message = response.message;
+      _isLoading = false;
+
+      notifyListeners();
+      return;
+    }
+
+    if (response.data != null) _products = response.data!;
+    _isLoading = false;
+
+    notifyListeners();
+    return;
+  }
+
+  Future<void> getProducts() async {
     _isLoading = true;
 
     notifyListeners();
@@ -139,33 +159,34 @@ class ProductProvider extends ChangeNotifier {
       _isLoading = false;
 
       notifyListeners();
-      return _products;
+      return;
     }
 
-    _products = response.data!;
+    if (response.data != null) _products = response.data!;
     _isLoading = false;
 
     notifyListeners();
-    return _products;
   }
 
-  Future updateProduct(Product product, File selectedPicture) async {
+  Future updateProduct(Product product, File? selectedPicture) async {
     _isLoading = true;
 
     notifyListeners();
 
-    ApiResponse<List<String>> imageResponse = await _storageFirebase.firebaseAddImage(selectedPicture, product.id);
+    if (selectedPicture != null) {
+      ApiResponse<List<String>> imageResponse = await _storageFirebase.firebaseAddImage(selectedPicture, product.id);
 
-    if (!imageResponse.isSuccess) {
-      _message = imageResponse.message;
-      _isLoading = false;
+      if (!imageResponse.isSuccess) {
+        _message = imageResponse.message;
+        _isLoading = false;
 
-      notifyListeners();
-      return;
+        notifyListeners();
+        return;
+      }
+
+      product.data.imageUrl = imageResponse.data![0];
+      product.data.fullPath = imageResponse.data![1];
     }
-
-    product.data.imageUrl = imageResponse.data![0];
-    product.data.fullPath = imageResponse.data![1];
 
     ApiResponse<void> responseUpdated = await _productsFirestore.firebaseUpdateProduct(product);
 

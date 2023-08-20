@@ -13,9 +13,9 @@ import 'package:cosmetic_app/preferences/preferences.dart';
 class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   String _message = "";
-  String _role = "";
+  String _role = Preferences.getItem<String>("role") ?? "";
   Bill _selectedBill = billConstant;
-  UserApp _userApp = userAppConstant;
+  UserApp _userApp = UserApp.copy(userAppConstant);
 
   final AuthFirebase _authFirebase = AuthFirebase();
   final UsersFirestore _userFirebase = UsersFirestore();
@@ -63,7 +63,7 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
 
-    response = await _userFirebase.firebaseDeleteUser();
+    response = await _userFirebase.firebaseDeleteUser(role, userApp);
 
     if (!response.isSuccess && response.message.startsWith("Error")) {
       _message = response.message;
@@ -89,7 +89,7 @@ class AuthProvider extends ChangeNotifier {
 
     ApiResponse<UserApp> response = await _userFirebase.firebaseGetAdmin();
 
-    if (!response.isSuccess && response.message.startsWith("Error")) {
+    if (!response.isSuccess && response.message.startsWith("Error") && response.data == null) {
       _message = response.message;
       _isLoading = false;
 
@@ -97,7 +97,7 @@ class AuthProvider extends ChangeNotifier {
       return;
     }
 
-    _userApp = response.data!;
+    if (response.data != null) _userApp = response.data!;
 
     _message = "";
     _isLoading = false;
@@ -120,7 +120,7 @@ class AuthProvider extends ChangeNotifier {
       return;
     }
 
-    _userApp = response.data!;
+    if (response.data != null) _userApp = response.data!;
 
     _message = "";
     _isLoading = false;
@@ -157,12 +157,11 @@ class AuthProvider extends ChangeNotifier {
 
     await Preferences.setItem<bool>("isAuthenticated", true);
 
-    final UserApp userAppResponse = userResponse.data!;
-
     if (userResponse.data != null) await Preferences.setItem<String>("role", userApp.data.role);
 
+    if (userResponse.data != null) _userApp = userResponse.data!;
+
     _role = userApp.data.role;
-    _userApp = userAppResponse;
     _message = "";
     _isLoading = false;
 
@@ -195,7 +194,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void signUpUser(UserAuth userAuth) async {
+  Future<void> signUpUser(UserAuth userAuth) async {
     _isLoading = true;
 
     notifyListeners();
@@ -272,6 +271,7 @@ class AuthProvider extends ChangeNotifier {
     }
 
     _message = response.message;
+    _userApp = UserApp.copy(user);
     _isLoading = false;
 
     notifyListeners();

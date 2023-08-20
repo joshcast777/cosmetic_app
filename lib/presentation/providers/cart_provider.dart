@@ -1,4 +1,5 @@
 import 'package:cosmetic_app/constants/models/model_constants.dart';
+import 'package:cosmetic_app/preferences/preferences.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cosmetic_app/config/firebase/index.dart';
@@ -6,7 +7,7 @@ import 'package:cosmetic_app/config/firebase/index.dart';
 import 'package:cosmetic_app/infrastructure/models/index.dart';
 
 class CartProvider extends ChangeNotifier {
-  List<CartItem> _cartItems = cartItemsConstant;
+  List<CartItem> _cartItems = List.from(cartItemsConstant);
   bool _isLoading = false;
   String _message = "";
   double _total = 0.0;
@@ -37,7 +38,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addBillToUser() async {
+  Future<void> addBillToUser() async {
     _isLoading = true;
 
     notifyListeners();
@@ -48,7 +49,11 @@ class CartProvider extends ChangeNotifier {
       cartItems: _cartItems,
     );
 
-    ApiResponse<void> response = await _firestoreFirebase.firebaseAddBillToUser("ESqSO8PyAAWgmLCYSZUzNzzbM8L2", billData);
+    final String? uid = Preferences.getItem<String>("uid");
+
+    if (uid == null) return;
+
+    ApiResponse<void> response = await _firestoreFirebase.firebaseAddBillToUser(uid, billData);
 
     if (!response.isSuccess && response.message.startsWith("Error")) {
       _message = response.message.split("/")[1];
@@ -58,9 +63,9 @@ class CartProvider extends ChangeNotifier {
       return;
     }
 
-    _message = response.message.split("/")[1];
+    _message = response.message;
     _total = 0.0;
-    _cartItems = cartItemsConstant;
+    _cartItems = List.from(cartItemsConstant);
     _isLoading = false;
 
     notifyListeners();
@@ -96,7 +101,7 @@ class CartProvider extends ChangeNotifier {
   void _calculateTotal() => _total = _cartItems.isEmpty ? 0.0 : _cartItems.map((CartItem cartItem) => cartItem.amount * cartItem.product.data.price).reduce((double totalAcumulator, double subTotal) => totalAcumulator + subTotal);
 
   void clearAll() {
-    _cartItems = cartItemsConstant;
+    _cartItems = List.from(cartItemsConstant);
     _isLoading = false;
     _message = "";
     _total = 0.0;

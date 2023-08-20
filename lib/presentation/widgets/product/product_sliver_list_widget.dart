@@ -9,8 +9,6 @@ import 'package:cosmetic_app/presentation/widgets/shared/index.dart';
 
 import 'package:cosmetic_app/presentation/providers/index.dart';
 
-import 'package:cosmetic_app/preferences/preferences.dart';
-
 import 'package:cosmetic_app/utils/index.dart';
 
 class ProductSliverListWidget extends StatelessWidget {
@@ -20,10 +18,11 @@ class ProductSliverListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    final CartProvider cartProvider = context.watch<CartProvider>();
     final ProductProvider productProvider = context.watch<ProductProvider>();
+    final AuthProvider authProvider = context.watch<AuthProvider>();
+    final CartProvider cartProvider = context.watch<CartProvider>();
 
-    final String? role = Preferences.getItem<String>("role");
+    final String role = authProvider.role;
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
@@ -70,11 +69,11 @@ class ProductSliverListWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (role == "customer")
+                  if (role != "admin")
                     const SizedBox(
                       width: 10.0,
                     ),
-                  if (role == "customer")
+                  if (role != "admin")
                     FilledButton.tonal(
                       style: FilledButton.styleFrom(
                         backgroundColor: colorScheme.tertiary,

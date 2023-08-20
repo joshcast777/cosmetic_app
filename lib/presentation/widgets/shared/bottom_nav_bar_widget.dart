@@ -1,6 +1,5 @@
 import 'package:cosmetic_app/presentation/providers/index.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 class BottomNavBarWidget extends StatelessWidget {

@@ -21,8 +21,12 @@ class UserProvider extends ChangeNotifier {
 
     notifyListeners();
 
+    final String? uid = Preferences.getItem<String>("uid");
+
+    if (uid == null) return;
+
     ApiResponse<void> response = await _userFirebase.firebaseAddUser(UserApp(
-      id: Preferences.getItem<String>("uid")!,
+      id: uid,
       data: userAppData,
     ));
 

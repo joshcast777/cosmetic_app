@@ -18,7 +18,7 @@ class ProductsView extends StatelessWidget {
     final ProductProvider productProvider = context.watch<ProductProvider>();
 
     if (productProvider.products.isEmpty) {
-      productProvider.getProducts();
+      productProvider.getProductsByInit();
 
       return const Center(
         child: CircularProgressIndicator(),

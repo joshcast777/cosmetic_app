@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cosmetic_app/constants/auth/auth_constants.dart';
-import 'package:cosmetic_app/constants/errors/error_constants.dart';
 import 'package:cosmetic_app/constants/regexp/regexp_constants.dart';
 import 'package:cosmetic_app/constants/success/success_constants.dart';
 import 'package:cosmetic_app/infrastructure/models/index.dart';
@@ -192,9 +191,11 @@ class _ProfileEditingFormScreenState extends State<ProfileEditingFormScreen> {
                         onPressed: () async {
                           if (_formKey.currentState != null && !_formKey.currentState!.validate()) return;
 
-                          if (_userApp.data.email != authProvider.userApp.data.email || _userApp.data.password != authProvider.userApp.data.password) setState(() => _closeSession = true);
-
                           await authProvider.updateUser(_userApp);
+
+                          // authProvider.role == "admin" ? await authProvider.getAdmin() : await authProvider.getCustomer();
+
+                          if (_userApp.data.email != authProvider.userApp.data.email || _userApp.data.password != authProvider.userApp.data.password) setState(() => _closeSession = true);
 
                           setState(() => _showDialog = true);
                         },

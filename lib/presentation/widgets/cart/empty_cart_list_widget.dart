@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-
-import 'package:cosmetic_app/presentation/providers/index.dart';
-
 import 'package:cosmetic_app/constants/design/design_constants.dart';
 
 class EmptyCartListWidget extends StatelessWidget {
@@ -29,8 +25,6 @@ class EmptyCartListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
-    final ViewProvider viewProvider = context.watch<ViewProvider>();
 
     return Container(
       margin: const EdgeInsets.symmetric(

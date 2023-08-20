@@ -20,6 +20,7 @@ class CartView extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    final AuthProvider authProvider = context.watch<AuthProvider>();
     final CartProvider cartProvider = context.watch<CartProvider>();
     final ViewProvider viewProvider = context.watch<ViewProvider>();
 
@@ -91,8 +92,10 @@ class CartView extends StatelessWidget {
                     ),
                     onPressed: cartProvider.isLoading
                         ? null
-                        : () {
-                            cartProvider.addBillToUser();
+                        : () async {
+                            await cartProvider.addBillToUser();
+
+                            authProvider.role == "admin" ? await authProvider.getAdmin() : await authProvider.getCustomer();
                           },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -11,6 +11,7 @@ class BillsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthProvider authProvider = context.watch<AuthProvider>();
+    final ViewProvider viewProvider = context.watch<ViewProvider>();
 
     final List<Bill>? bills = authProvider.userApp.data.bills;
 
@@ -20,7 +21,11 @@ class BillsScreen extends StatelessWidget {
       ),
       body: bills!.isEmpty
           ? EmptyCartListWidget(
-              buttonPressed: () {},
+              buttonPressed: () {
+                Navigator.pop(context);
+
+                viewProvider.currentIndex = 0;
+              },
               buttonText: "Nuestros productos",
               icon: Icons.sentiment_dissatisfied_outlined,
               title: "¡Qué mal!",

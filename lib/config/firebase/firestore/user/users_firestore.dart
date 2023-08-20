@@ -19,8 +19,6 @@ class UsersFirestore {
     try {
       await documentReference.set(userApp.data.toJson());
 
-      await documentReference.collection(customerBillPathDatabase).doc().set({});
-
       return ApiResponse<void>(
         isSuccess: true,
         message: "",
@@ -30,12 +28,21 @@ class UsersFirestore {
     }
   }
 
-  Future<ApiResponse<void>> firebaseDeleteUser() async {
-    final String role = Preferences.getItem<String>("role")!;
-    final String uid = Preferences.getItem<String>("uid")!;
-
+  Future<ApiResponse<void>> firebaseDeleteUser(String role, UserApp userApp) async {
     try {
-      await _userFirestore.collection("${role}s").doc(uid).delete();
+      DocumentReference documentReference = FirebaseFirestore.instance.collection("${role}s").doc(userApp.id);
+
+      CollectionReference subcollectionReference = documentReference.collection(customerBillPathDatabase);
+
+      QuerySnapshot subcollectionSnapshot = await subcollectionReference.get();
+
+      if (subcollectionSnapshot.docs.isNotEmpty) {
+        for (QueryDocumentSnapshot docSnapshot in subcollectionSnapshot.docs) {
+          await docSnapshot.reference.delete();
+        }
+      }
+
+      await documentReference.delete();
 
       return ApiResponse<void>(
         isSuccess: true,
@@ -47,30 +54,37 @@ class UsersFirestore {
   }
 
   Future<ApiResponse<UserApp>> firebaseGetAdmin() async {
-    final String uid = Preferences.getItem<String>("uid")!;
+    final String? uid = Preferences.getItem<String>("uid");
 
     try {
-      final DocumentReference<Map<String, dynamic>> adminReference = _userFirestore.collection(adminsPathDatabase).doc(uid);
+      if (uid != null) {
+        final DocumentReference<Map<String, dynamic>> adminReference = _userFirestore.collection(adminsPathDatabase).doc(uid);
 
-      final DocumentSnapshot<Map<String, dynamic>> adminSnapshot = await adminReference.get();
+        final DocumentSnapshot<Map<String, dynamic>> adminSnapshot = await adminReference.get();
 
-      if (adminSnapshot.exists) {
-        Map<String, dynamic> userData = adminSnapshot.data()!;
+        if (adminSnapshot.exists) {
+          Map<String, dynamic> userData = adminSnapshot.data()!;
 
-        UserApp userApp = UserApp.fromJson({
-          "id": uid,
-          "data": userData,
-        });
+          UserApp userApp = UserApp.fromJson({
+            "id": uid,
+            "data": userData,
+          });
+
+          return ApiResponse<UserApp>(
+            isSuccess: true,
+            message: "",
+            data: userApp,
+          );
+        }
 
         return ApiResponse<UserApp>(
-          isSuccess: true,
-          message: "",
-          data: userApp,
+          isSuccess: false,
+          message: "$errorMessage$dataNotFoundErorr",
         );
       }
 
       return ApiResponse<UserApp>(
-        isSuccess: false,
+        isSuccess: true,
         message: "$errorMessage$dataNotFoundErorr",
       );
     } catch (e) {
@@ -82,74 +96,78 @@ class UsersFirestore {
     final String? uid = Preferences.getItem<String>("uid");
 
     try {
-      final DocumentReference<Map<String, dynamic>> customerReference = _userFirestore.collection(customersPathDatabase).doc(uid);
+      if (uid != null) {
+        final DocumentReference<Map<String, dynamic>> customerReference = _userFirestore.collection(customersPathDatabase).doc(uid);
 
-      final DocumentSnapshot<Map<String, dynamic>> customerSnapshot = await customerReference.get();
+        final DocumentSnapshot<Map<String, dynamic>> customerSnapshot = await customerReference.get();
 
-      if (customerSnapshot.exists) {
-        Map<String, dynamic> userData = customerSnapshot.data()!;
+        if (customerSnapshot.exists) {
+          Map<String, dynamic> userData = customerSnapshot.data()!;
 
-        UserApp userApp = UserApp.fromJson({
-          "id": uid,
-          "data": userData,
-        });
+          UserApp userApp = UserApp.fromJson({
+            "id": uid,
+            "data": userData,
+          });
 
-        CollectionReference<Map<String, dynamic>> userCollections = customerReference.collection(customerBillPathDatabase);
-        QuerySnapshot<Map<String, dynamic>> userCollectionsSnapshot = await userCollections.get();
+          CollectionReference<Map<String, dynamic>> userCollections = customerReference.collection(customerBillPathDatabase);
+          QuerySnapshot<Map<String, dynamic>> userCollectionsSnapshot = await userCollections.get();
 
-        List<Bill> bills = [];
+          List<Bill> bills = [];
 
-        for (QueryDocumentSnapshot<Map<String, dynamic>> collectionDoc in userCollectionsSnapshot.docs) {
-          Map<String, dynamic> billData = collectionDoc.data();
+          if (userCollectionsSnapshot.docs.isNotEmpty) {
+            for (QueryDocumentSnapshot<Map<String, dynamic>> collectionDoc in userCollectionsSnapshot.docs) {
+              Map<String, dynamic> billData = collectionDoc.data();
 
-          DateTime date = billData['date'].toDate();
+              DateTime date = billData['date'].toDate();
 
-          double total = billData['total'] / 1;
+              double total = billData['total'] / 1;
 
-          List<Map<String, dynamic>> productsList = (billData['products'] as List<dynamic>).cast<Map<String, dynamic>>();
+              List<Map<String, dynamic>> productsList = (billData['products'] as List<dynamic>).cast<Map<String, dynamic>>();
 
-          List<CartItem> products = [];
+              List<CartItem> products = [];
 
-          for (Map<String, dynamic> productData in productsList) {
-            int amount = productData['amount'] as int;
-            DocumentReference<Map<String, dynamic>> productReference = productData['product'];
+              for (Map<String, dynamic> productData in productsList) {
+                int amount = productData['amount'] as int;
+                DocumentReference<Map<String, dynamic>> productReference = productData['product'];
 
-            DocumentSnapshot<Map<String, dynamic>> productSnapshot = await productReference.get();
+                DocumentSnapshot<Map<String, dynamic>> productSnapshot = await productReference.get();
 
-            if (productSnapshot.exists) {
-              Map<String, dynamic> productData = productSnapshot.data()!;
+                if (productSnapshot.exists) {
+                  Map<String, dynamic> productData = productSnapshot.data()!;
 
-              Product product = Product(
-                id: productSnapshot.id,
-                data: ProductData.fromJson(productData),
-              );
+                  Product product = Product(
+                    id: productSnapshot.id,
+                    data: ProductData.fromJson(productData),
+                  );
 
-              products.add(
-                CartItem(
-                  amount: amount,
-                  product: product,
+                  products.add(
+                    CartItem(
+                      amount: amount,
+                      product: product,
+                    ),
+                  );
+                }
+              }
+
+              bills.add(Bill(
+                id: collectionDoc.id,
+                data: BillData(
+                  date: date,
+                  total: total,
+                  cartItems: products,
                 ),
-              );
+              ));
             }
           }
 
-          bills.add(Bill(
-            id: collectionDoc.id,
-            data: BillData(
-              date: date,
-              total: total,
-              cartItems: products,
-            ),
-          ));
+          userApp.data.bills = bills;
+
+          return ApiResponse<UserApp>(
+            isSuccess: true,
+            message: "",
+            data: userApp,
+          );
         }
-
-        userApp.data.bills = bills;
-
-        return ApiResponse<UserApp>(
-          isSuccess: true,
-          message: "",
-          data: userApp,
-        );
       }
 
       return ApiResponse<UserApp>(
@@ -162,14 +180,23 @@ class UsersFirestore {
   }
 
   Future<ApiResponse<void>> firebaseUpdateUser(UserApp user) async {
-    DocumentReference<Map<String, dynamic>> documentReference = _userFirestore.collection("${Preferences.getItem<String>("role")!}s").doc(user.id);
+    final String? role = Preferences.getItem<String>("role");
 
     try {
-      await documentReference.update(user.data.toJson());
+      if (role != null) {
+        DocumentReference<Map<String, dynamic>> documentReference = _userFirestore.collection("${role}s").doc(user.id);
+
+        await documentReference.update(user.data.toJson());
+
+        return ApiResponse<void>(
+          isSuccess: true,
+          message: "$successMessage$successfullySaved",
+        );
+      }
 
       return ApiResponse<void>(
         isSuccess: true,
-        message: "$successMessage$successfullySaved",
+        message: "$errorMessage$dataNotFoundErorr",
       );
     } catch (e) {
       return errorMessageRequest<void>(e);

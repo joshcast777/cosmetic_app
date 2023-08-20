@@ -115,7 +115,13 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
                       onPressed: () async {
                         final XFile? pickedImage = await selectImage();
 
-                        setState(() => _selectedPicture = File(pickedImage!.path));
+                        if (pickedImage == null) {
+                          setState(() => _emptySelectedImage = false);
+
+                          return;
+                        }
+
+                        setState(() => _selectedPicture = File(pickedImage.path));
 
                         if (_selectedPicture != null) setState(() => _emptySelectedImage = false);
                       },
@@ -136,7 +142,13 @@ class _ProductFormWidgetState extends State<ProductFormWidget> {
                       onPressed: () async {
                         final XFile? pickedImage = await takeImage();
 
-                        setState(() => _selectedPicture = File(pickedImage!.path));
+                        if (pickedImage == null) {
+                          setState(() => _emptySelectedImage = false);
+
+                          return;
+                        }
+
+                        setState(() => _selectedPicture = File(pickedImage.path));
 
                         if (_selectedPicture != null) setState(() => _emptySelectedImage = false);
                       },
